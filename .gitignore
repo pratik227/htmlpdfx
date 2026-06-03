@@ -6,6 +6,5 @@ coverage
 *.log
 *.pdf
 .DS_Store
-.vitepress
 .idea
 .vscode
