@@ -68,16 +68,15 @@
     "docs:preview": "vitepress preview docs",
     "prepublishOnly": "npm run build"
   },
+  "optionalDependencies": {
+    "puppeteer": "^25.1.0"
+  },
   "peerDependencies": {
     "playwright": "*",
     "playwright-core": "*",
-    "puppeteer": "*",
     "puppeteer-core": "*"
   },
   "peerDependenciesMeta": {
-    "puppeteer": {
-      "optional": true
-    },
     "puppeteer-core": {
       "optional": true
     },

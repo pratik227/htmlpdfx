@@ -6,17 +6,27 @@
 npm i htmlpdfx
 ```
 
-The **core has no runtime dependencies** — the PDF writer and the DOM rasterizer
-are built in. You only add an engine when you want the high-fidelity path:
+On **Node / Bun**, this also pulls in [Puppeteer](https://pptr.dev) (which bundles
+Chromium) as an **optional dependency** — so the high-fidelity engine (selectable
+text, perfect CSS, native page breaks) works out of the box with no extra step.
+
+The install is resilient: Puppeteer is *optional*, so if its Chromium download is
+unavailable (CI caches, offline, or browser-only targets) `npm i htmlpdfx` still
+succeeds and the built-in renderer is used instead.
 
 ```bash
-# Node / Bun — real Chromium: selectable text, perfect CSS, native page breaks
-npm i puppeteer          # bundles Chromium
-# or
-npm i playwright
+# Node / Bun — Chromium ships by default via the optional puppeteer dependency.
+# Nothing else to install.
 
-# Browser — nothing to install; the built-in renderer is used
+# Prefer Playwright or a system Chrome instead? Install one of these and
+# htmlpdfx will detect and use it automatically:
+npm i playwright          # or: playwright-core / puppeteer-core
+
+# Browser — nothing to install; the built-in renderer is used.
 ```
+
+> The **core has no required runtime dependencies** — the PDF writer and DOM
+> rasterizer are built in. The Chromium engine is purely additive.
 
 ## Your first PDF
 

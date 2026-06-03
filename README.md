@@ -32,20 +32,21 @@ await pdf.save("hello.pdf");          // Node / Bun
 npm i htmlpdfx
 ```
 
-**Zero runtime dependencies.** The PDF writer and the DOM rasterizer are written
-from scratch and ship inside the package — no `jspdf`, no `html2canvas`.
+**No required runtime dependencies.** The PDF writer and the DOM rasterizer are
+written from scratch and ship inside the package — no `jspdf`, no `html2canvas`.
 
+- **Node / Bun** → [Puppeteer](https://pptr.dev) (bundles Chromium) is installed
+  automatically as an **optional dependency**, so the high-fidelity engine
+  (selectable vector text, perfect CSS, native page breaks) works out of the box.
 - **Browser** → nothing else to install; the built-in renderer is used.
-- **Node / Bun** → add a Chromium driver for the high-fidelity engine (selectable
-  vector text, perfect CSS):
+
+Because Puppeteer is *optional*, `npm i htmlpdfx` still succeeds if its Chromium
+download is unavailable (CI, offline, browser-only) — htmlpdfx falls back to the
+built-in renderer. Prefer a different driver? Install one and it's auto-detected:
 
 ```bash
-npm i puppeteer        # bundles Chromium  (recommended)
-# or:  npm i playwright
+npm i playwright        # or: playwright-core / puppeteer-core
 ```
-
-Puppeteer/Playwright are **optional peer dependencies** — only needed for the
-server-side `chromium` engine.
 
 ## Two APIs
 
