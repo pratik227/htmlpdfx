@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>htmlpdfx browser harness</title>
+  </head>
+  <body>
+    <div id="status">loading…</div>
+    <script type="module">
+      import { toPdf, PdfWriter } from "../dist/browser.js";
+
+      function latin1(bytes) {
+        let s = "";
+        for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+        return s;
+      }
+
+      // A document exercising: forced page breaks, oklch (Tailwind v4),
+      // flexbox, an inline SVG, and an avoid block.
+      const html = `
+        <div style="font-family: system-ui;">
+          <section style="display:flex; gap:12px; color: oklch(0.6 0.2 250);">
+            <div style="flex:1; background:#fde68a; padding:12px;">Flex A</div>
+            <div style="flex:1; background:#a7f3d0; padding:12px;">Flex B</div>
+          </section>
+          <h1 style="color: oklch(0.5 0.2 20)">Heading with oklch color</h1>
+          <svg width="80" height="40"><rect width="80" height="40" fill="#1d4ed8"/></svg>
+          <div class="html2pdf__page-break"></div>
+          <h2>Second page</h2>
+          <div class="keep" style="height:400px; background:#ddd6fe;">avoid-split block</div>
+          <div class="html2pdf__page-break"></div>
+          <h2>Third page</h2>
+          <p>Tall content below to force more pages.</p>
+          ${Array.from({ length: 60 }, (_, i) => `<p>Line ${i + 1} — lorem ipsum dolor sit amet.</p>`).join("")}
+        </div>`;
+
+      window.__run = async () => {
+        const results = {};
+        try {
+          const pdf = await toPdf(
+            { html },
+            {
+              engine: "canvas",
+              format: "a4",
+              margin: 12,
+              metadata: { title: "Browser harness", author: "htmlpdfx" },
+              footer: { template: "Page {{page}} / {{pages}}" },
+              pageBreak: { mode: ["legacy", "css"], avoid: [".keep"] },
+              canvas: { scale: 2, imageType: "jpeg", imageQuality: 0.9 },
+            }
+          );
+          const head = latin1(pdf.bytes.subarray(0, 8));
+          results.canvasEngine = {
+            ok: head.startsWith("%PDF-"),
+            engine: pdf.engine,
+            pageCount: pdf.pageCount,
+            bytes: pdf.bytes.length,
+            header: head,
+            hasTitle: latin1(pdf.bytes).includes("/Title (Browser harness)"),
+            hasFooterText: latin1(pdf.bytes).includes("Tj"),
+          };
+        } catch (e) {
+          results.canvasEngine = { ok: false, error: String(e && e.message || e) };
+        }
+
+        // Direct PdfWriter sanity (pure, no DOM).
+        try {
+          const w = new PdfWriter({ title: "direct" });
+          w.addPage(595, 842);
+          w.addPage(595, 842);
+          results.writer = {
+            ok: latin1(w.toBytes()).startsWith("%PDF-"),
+            pageCount: w.pageCount,
+          };
+        } catch (e) {
+          results.writer = { ok: false, error: String(e) };
+        }
+
+        return results;
+      };
+
+      document.getElementById("status").textContent = "ready";
+    </script>
+  </body>
+</html>

@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>htmlpdfx — browser example</title>
+    <!-- The canvas engine needs jspdf + html2canvas available in the browser. -->
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1/dist/html2canvas.min.js"></script>
+  </head>
+  <body>
+    <div id="doc" style="font-family: system-ui; padding: 24px; max-width: 700px">
+      <h1 style="color: #1d4ed8">Hello from the browser</h1>
+      <p>This is rendered client-side via the canvas engine (html2canvas + jsPDF).</p>
+      <div class="html2pdf__page-break"></div>
+      <h2>Second page</h2>
+      <p>The legacy <code>.html2pdf__page-break</code> element starts a new page.</p>
+    </div>
+    <button id="go">Download PDF</button>
+
+    <!-- Built browser bundle (run `npm run build` first). -->
+    <script type="module">
+      import htmlpdfx from "../dist/browser.js";
+
+      document.getElementById("go").addEventListener("click", async () => {
+        await htmlpdfx()
+          .from({ element: document.getElementById("doc") })
+          .set({
+            format: "a4",
+            margin: 12,
+            pageBreak: { mode: ["legacy", "css"] },
+            canvas: { scale: 2, imageType: "jpeg", imageQuality: 0.95 },
+          })
+          .save("browser-demo.pdf");
+      });
+    </script>
+  </body>
+</html>

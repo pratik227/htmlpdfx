@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>htmlpdfx frameworks harness</title>
+    <style>
+      /* shadcn/ui-style design tokens via CSS custom properties */
+      :root {
+        --background: oklch(1 0 0);
+        --card: oklch(0.98 0 0);
+        --primary: oklch(0.55 0.2 264);
+        --border: oklch(0.9 0 0);
+        --radius: 0.625rem;
+      }
+      .card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 1rem;
+        color: var(--primary);
+      }
+      /* Tailwind-like utilities */
+      .flex { display: flex; }
+      .gap-4 { gap: 1rem; }
+      .grid { display: grid; }
+      .grid-cols-3 { grid-template-columns: repeat(3, 1fr); }
+      .p-4 { padding: 1rem; }
+      .rounded { border-radius: 8px; }
+      .bg-amber { background: #fde68a; }
+      .bg-emerald { background: #a7f3d0; }
+      /* Vuetify/Quasar-style row/col grid */
+      .v-row { display: flex; flex-wrap: wrap; }
+      .v-col { flex: 1 1 0; padding: 8px; }
+    </style>
+  </head>
+  <body>
+    <div id="status">loading…</div>
+    <script type="module">
+      import { toPdf } from "../dist/browser.js";
+
+      const latin1 = (b) => { let s=""; for (let i=0;i<b.length;i++) s+=String.fromCharCode(b[i]); return s; };
+
+      const html = `
+        <div>
+          <div class="card">shadcn-style card using CSS variables + oklch tokens</div>
+          <div class="flex gap-4" style="margin-top:12px">
+            <div class="p-4 rounded bg-amber" style="flex:1">Tailwind flex A</div>
+            <div class="p-4 rounded bg-emerald" style="flex:1">Tailwind flex B</div>
+          </div>
+          <div class="grid grid-cols-3" style="gap:8px;margin-top:12px">
+            <div class="p-4 rounded bg-amber">grid 1</div>
+            <div class="p-4 rounded bg-emerald">grid 2</div>
+            <div class="p-4 rounded bg-amber">grid 3</div>
+          </div>
+          <div class="v-row" style="margin-top:12px">
+            <div class="v-col" style="background:#e0e7ff">Vuetify col 1</div>
+            <div class="v-col" style="background:#fbcfe8">Vuetify col 2</div>
+          </div>
+        </div>`;
+
+      window.__runFrameworks = async () => {
+        try {
+          // Inline the page's framework CSS so the offscreen host renders it.
+          const css = Array.from(document.styleSheets)
+            .flatMap((s) => { try { return Array.from(s.cssRules).map((r) => r.cssText); } catch { return []; } })
+            .join("\n");
+
+          const pdf = await toPdf(
+            { html },
+            { engine: "canvas", format: "a4", margin: 12, css, canvas: { scale: 2 } }
+          );
+          const head = latin1(pdf.bytes.subarray(0, 8));
+          return { ok: head.startsWith("%PDF-"), engine: pdf.engine, pageCount: pdf.pageCount, bytes: pdf.bytes.length };
+        } catch (e) {
+          return { ok: false, error: String(e && e.message || e) };
+        }
+      };
+      document.getElementById("status").textContent = "ready";
+    </script>
+  </body>
+</html>

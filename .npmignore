@@ -1,0 +1,11 @@
+src
+test
+docs
+examples
+coverage
+tsconfig.json
+tsup.config.ts
+vitest.config.ts
+*.tgz
+*.pdf
+.github
