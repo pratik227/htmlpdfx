@@ -29,14 +29,19 @@ describe("public API", () => {
     expect(presets.fullBleed.margin).toBe(0);
   });
 
-  it("fails with NO_ENGINE in Node when no Chromium driver is installed", async () => {
-    // puppeteer/playwright are not installed in this test env.
+  it("surfaces a clean HtmlPdfxError in Node when no usable Chromium engine exists", async () => {
+    // Depending on the environment, either no driver module is installed
+    // (NO_ENGINE), or a driver module is present but its browser binary is not
+    // (ENGINE_LAUNCH_FAILED). If a real browser happens to be installed,
+    // rendering simply succeeds. In no case should a raw driver error leak out.
     try {
       await toPdf("<h1>x</h1>");
-      // If a driver happens to be installed, that's fine too.
+      // A usable engine was present — fine.
     } catch (err) {
       expect(err).toBeInstanceOf(HtmlPdfxError);
-      expect((err as HtmlPdfxError).code).toBe("NO_ENGINE");
+      expect(["NO_ENGINE", "ENGINE_LAUNCH_FAILED"]).toContain(
+        (err as HtmlPdfxError).code
+      );
     }
   });
 

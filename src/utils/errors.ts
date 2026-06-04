@@ -3,6 +3,7 @@
 export type ErrorCode =
   | "NO_ENGINE"
   | "ENGINE_UNAVAILABLE"
+  | "ENGINE_LAUNCH_FAILED"
   | "INVALID_INPUT"
   | "INVALID_OPTIONS"
   | "RENDER_FAILED"

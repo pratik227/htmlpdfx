@@ -102,10 +102,23 @@ export const chromiumEngine: Engine = {
         if (opts.chromium.executablePath) {
           launchOpts.executablePath = opts.chromium.executablePath;
         }
-        browser =
-          family === "playwright"
-            ? await driver!.mod.chromium.launch(launchOpts)
-            : await driver!.mod.launch(launchOpts);
+        try {
+          browser =
+            family === "playwright"
+              ? await driver!.mod.chromium.launch(launchOpts)
+              : await driver!.mod.launch(launchOpts);
+        } catch (err) {
+          // The driver module is installed but a Chromium binary could not be
+          // launched (commonly: the browser was never downloaded). Surface a
+          // clean, typed error instead of leaking the raw driver exception.
+          fail(
+            "ENGINE_LAUNCH_FAILED",
+            `Failed to launch a Chromium browser via ${family}.`,
+            family === "playwright"
+              ? "Install the browser binary: `npx playwright install chromium`."
+              : "Install the browser binary: `npx puppeteer browsers install chrome`."
+          );
+        }
         ownsBrowser = true;
       }
 
