@@ -38,6 +38,9 @@ replacement for the real engine.
 | **Web fonts** | ✅ | ✅ | `document.fonts.ready` awaited; embedded |
 | **Background colors** | ✅ | ✅ | `print-color-adjust: exact` |
 | **Headers & footers (`{{page}}`/`{{pages}}`)** | ✅ | ✅ | Selectable in Chromium; rasterized in canvas |
+| **Outline / bookmarks from headings** | ✅ | ❌ | `chromium: { outline: true }` |
+| **Tagged / accessible (PDF/UA) output** | ✅ | ❌ | On by default in the Chromium tier |
+| **Warm-browser pooling** | ✅ | — | `createRenderer()` — ~10× server throughput |
 | **Page size & orientation** | ✅ | ✅ | Never auto-flipped |
 | **RTL / bidi text** | ✅ | ⚠️ | Chromium uses the real bidi engine |
 | **Unicode / i18n** | ✅ | ✅ | Any glyph; PDF strings safely escaped |
@@ -71,6 +74,10 @@ Documented limitations, not yet implemented:
 - **Interactive form fields** (AcroForm widgets).
 - **Password / encryption** (user/owner passwords, permission flags).
 - **Browser `<PdfExport>` component** for client-side React/Vue export.
+
+Every capability above is verified end-to-end against a real produced PDF in
+`test/e2e.mjs` (page count, selectable text, repeating headers, links, outline,
+and pooling), run through real Chromium in CI.
 
 ## Run the checks
 

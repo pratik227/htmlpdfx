@@ -63,13 +63,16 @@ jobs:
       - run: npx playwright install --with-deps chromium firefox webkit
       - run: npm run test:browser
 
-  # End-to-end Chromium PDF via Puppeteer.
+  # End-to-end Chromium PDF: render real HTML and ASSERT on the produced PDF
+  # (page count, selectable text, repeating headers, links, outline, pooling).
   e2e-chromium:
     name: e2e chromium (ubuntu)
     runs-on: ubuntu-latest
-    # This job needs a real browser, so allow puppeteer's Chromium download.
     env:
+      # This job needs a real browser, so allow puppeteer's Chromium download…
       PUPPETEER_SKIP_DOWNLOAD: "false"
+      # …and treat a missing browser as a failure, not a silent skip.
+      HTMLPDFX_E2E_REQUIRE: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -78,4 +81,4 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
-      - run: node examples/node-basic.mjs || true
+      - run: npm run test:e2e

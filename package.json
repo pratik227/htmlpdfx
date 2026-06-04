@@ -75,6 +75,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:browser": "node test/cross-browser.mjs",
+    "test:e2e": "node test/e2e.mjs",
     "lint": "tsc --noEmit",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
@@ -118,6 +119,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.19.19",
+    "pdfjs-dist": "^6.0.227",
     "playwright": "^1.60.0",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",

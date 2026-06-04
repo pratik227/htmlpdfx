@@ -65,6 +65,8 @@ export interface NormalizedOptions {
       | "playwright-core";
     executablePath?: string;
     timeout: number;
+    outline: boolean;
+    tagged: boolean;
   };
   onProgress?: HtmlPdfxOptions["onProgress"];
   silent: boolean;
@@ -182,6 +184,8 @@ export function normalizeOptions(opts: HtmlPdfxOptions = {}): NormalizedOptions 
       driver: opts.chromium?.driver,
       executablePath: opts.chromium?.executablePath,
       timeout: opts.chromium?.timeout ?? 30000,
+      outline: opts.chromium?.outline ?? false,
+      tagged: opts.chromium?.tagged ?? true,
     },
     onProgress: opts.onProgress,
     silent: opts.silent ?? false,

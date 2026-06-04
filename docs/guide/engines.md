@@ -31,6 +31,41 @@ await toPdf(html, {
 Driver detection order: `puppeteer` → `playwright` → `puppeteer-core` →
 `playwright-core`. Force one with `chromium.driver`.
 
+### Accessible output & bookmarks
+
+```ts
+await toPdf(html, {
+  chromium: {
+    tagged: true,    // structured, accessible (PDF/UA-style) — default true
+    outline: true,   // navigable bookmarks from <h1>–<h6> — default false
+  },
+});
+```
+
+`tagged` produces a structured document screen readers understand; `outline`
+adds a heading-derived table of contents — ideal for long reports.
+
+### Reuse a warm browser (server pooling)
+
+Launching Chromium costs ~300–700ms. On a server generating many PDFs, keep one
+browser **warm** and reuse it — typically a ~10× throughput win:
+
+```ts
+import { createRenderer } from "htmlpdfx";
+
+const renderer = await createRenderer({ format: "a4", margin: 12 });
+await renderer.warmup();          // optional: launch eagerly
+
+// Each call reuses the same browser; per-call options override the base.
+const invoice = await renderer.toPdf(invoiceHtml);
+const report = await renderer.toPdf(reportHtml, { orientation: "landscape" });
+
+await renderer.close();           // free the browser when done
+```
+
+Each render gets its own page/context, so concurrent calls are safe. The
+renderer is server-only (Node/Bun/Deno).
+
 ## `canvas` — built-in (browser)
 
 A **fully self-contained** pipeline — no `jspdf`, no `html2canvas`:

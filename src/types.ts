@@ -156,6 +156,16 @@ export interface ChromiumEngineOptions {
   executablePath?: string;
   /** Per-render navigation/render timeout in ms. Default 30000. */
   timeout?: number;
+  /**
+   * Generate a navigable PDF outline (bookmarks) from the document's heading
+   * structure (`<h1>`–`<h6>`). Great for long reports. Default `false`.
+   */
+  outline?: boolean;
+  /**
+   * Produce a tagged PDF — a structured, accessible (PDF/UA-style) document
+   * that screen readers and reflow tools understand. Default `true`.
+   */
+  tagged?: boolean;
 }
 
 /** Full options accepted by every entry point. */

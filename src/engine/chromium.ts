@@ -41,6 +41,52 @@ function inches(mm: number): string {
   return `${mmToIn(mm).toFixed(4)}in`;
 }
 
+/**
+ * Launch a Chromium browser via the first available driver. Exposed so a
+ * long-lived renderer can keep one browser warm and reuse it across many
+ * renders (see `createRenderer`). The caller owns the returned browser and is
+ * responsible for closing it.
+ */
+export async function launchChromiumBrowser(
+  opts: NormalizedOptions
+): Promise<{ browser: any; family: "puppeteer" | "playwright" }> {
+  if (!isServerRuntime()) {
+    fail(
+      "ENGINE_UNAVAILABLE",
+      "A persistent Chromium renderer only runs in Node/Bun/Deno."
+    );
+  }
+  const driver = await loadDriver(opts.chromium.driver);
+  if (!driver) {
+    fail(
+      "NO_ENGINE",
+      "No Chromium driver available to launch a renderer.",
+      "Install a Chromium driver: `npm i puppeteer` (recommended) or `npm i playwright`."
+    );
+  }
+  const launchOpts: Record<string, unknown> = {
+    args: ["--no-sandbox", "--font-render-hinting=none", ...opts.chromium.launchArgs],
+  };
+  if (opts.chromium.executablePath) {
+    launchOpts.executablePath = opts.chromium.executablePath;
+  }
+  try {
+    const browser =
+      driver.family === "playwright"
+        ? await driver.mod.chromium.launch(launchOpts)
+        : await driver.mod.launch(launchOpts);
+    return { browser, family: driver.family };
+  } catch {
+    return fail(
+      "ENGINE_LAUNCH_FAILED",
+      `Failed to launch a Chromium browser via ${driver.family}.`,
+      driver.family === "playwright"
+        ? "Install the browser binary: `npx playwright install chromium`."
+        : "Install the browser binary: `npx puppeteer browsers install chrome`."
+    );
+  }
+}
+
 /** Translate {{page}} / {{pages}} / {{date}} / {{title}} into Chromium spans. */
 function expandTemplate(tpl: string): string {
   const body = tpl
@@ -292,6 +338,10 @@ async function printPdf(
     printBackground: opts.chromium.printBackground,
     scale: opts.chromium.scale,
     preferCSSPageSize: false,
+    // Accessible/structured output and (optionally) heading-derived bookmarks.
+    // Supported by puppeteer and playwright's Chromium pdf(); ignored elsewhere.
+    tagged: opts.chromium.tagged,
+    outline: opts.chromium.outline,
   };
 
   if (opts.header || opts.footer) {

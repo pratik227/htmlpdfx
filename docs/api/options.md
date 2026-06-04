@@ -9,6 +9,7 @@ interface HtmlPdfxOptions {
   unit?: "mm" | "cm" | "in" | "pt" | "px";    // default "mm"
   margin?: Margin;                            // default 10mm
   pageBreak?: PageBreakOptions;
+  smartPagination?: boolean | SmartPaginationOptions; // default true
   header?: { template: string; height?: Length };
   footer?: { template: string; height?: Length };
   metadata?: { title?; author?; subject?; keywords?: string[]; creator? };
@@ -44,6 +45,20 @@ interface PageBreakOptions {
 }
 ```
 
+## SmartPaginationOptions
+
+Zero-config print-CSS, on by default. Pass `false` to disable, or tune:
+
+```ts
+interface SmartPaginationOptions {
+  repeatTableHeaders?: boolean;       // <thead>/<tfoot> on every page (default true)
+  avoidSplit?: boolean;               // don't split rows/images/figures (default true)
+  keepHeadingsWithContent?: boolean;  // headings not stranded (default true)
+  orphans?: number;                   // min lines kept at page bottom (default 3)
+  widows?: number;                    // min lines carried to next page (default 3)
+}
+```
+
 ## CanvasEngineOptions (browser)
 
 ```ts
@@ -68,5 +83,21 @@ interface ChromiumEngineOptions {
   driver?: "puppeteer" | "puppeteer-core" | "playwright" | "playwright-core";
   executablePath?: string;
   timeout?: number;          // ms, default 30000
+  outline?: boolean;         // bookmarks from headings, default false
+  tagged?: boolean;          // accessible (PDF/UA-style) output, default true
 }
+```
+
+## createRenderer (server pooling)
+
+Keep one Chromium browser warm and reuse it across renders (~10× throughput):
+
+```ts
+import { createRenderer } from "htmlpdfx";
+
+const renderer = await createRenderer(baseOptions?);
+await renderer.warmup();                       // optional eager launch
+const pdf = await renderer.toPdf(input, perCallOptions?);
+renderer.isOpen;                               // boolean
+await renderer.close();                        // free the browser
 ```

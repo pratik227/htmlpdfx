@@ -58,4 +58,16 @@ describe("normalizeOptions", () => {
       normalizeOptions({ margin: [1, 2, 3] as never })
     ).toThrow();
   });
+
+  it("defaults to tagged (accessible) output, no outline", () => {
+    const o = normalizeOptions();
+    expect(o.chromium.tagged).toBe(true);
+    expect(o.chromium.outline).toBe(false);
+  });
+
+  it("honors explicit outline/tagged toggles", () => {
+    const o = normalizeOptions({ chromium: { outline: true, tagged: false } });
+    expect(o.chromium.outline).toBe(true);
+    expect(o.chromium.tagged).toBe(false);
+  });
 });
