@@ -48,6 +48,38 @@ built-in renderer. Prefer a different driver? Install one and it's auto-detected
 npm i playwright        # or: playwright-core / puppeteer-core
 ```
 
+### Without a bundler (CDN / `<script>`)
+
+In the browser you don't need npm at all. A prebuilt **UMD/IIFE global** ships
+in the package and is served by the CDNs, exposing `window.htmlpdfx`:
+
+```html
+<script src="https://unpkg.com/htmlpdfx"></script>
+<!-- or: https://cdn.jsdelivr.net/npm/htmlpdfx -->
+<script>
+  // `htmlpdfx` is the global namespace; use any export off it.
+  const { toPdf } = htmlpdfx;
+  toPdf(document.getElementById("invoice"), { margin: 12 })
+    .then((pdf) => pdf.download("invoice.pdf"));
+
+  // Fluent / html2pdf.js style is on the factory export:
+  // htmlpdfx.htmlpdfx().from(el).save("invoice.pdf");
+</script>
+```
+
+Prefer modern ES modules straight from a CDN — no build step, no global:
+
+```html
+<script type="module">
+  import { toPdf } from "https://esm.sh/htmlpdfx";
+  const pdf = await toPdf(document.getElementById("invoice"));
+  await pdf.download("invoice.pdf");
+</script>
+```
+
+> The browser build uses the self-contained canvas engine (no Chromium). For
+> selectable text / vector output, render server-side with the Chromium engine.
+
 ## Two APIs
 
 **Functional:**

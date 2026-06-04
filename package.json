@@ -51,11 +51,14 @@
       "import": "./dist/vue.js",
       "require": "./dist/vue.cjs"
     },
+    "./global": "./dist/htmlpdfx.global.js",
     "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "unpkg": "./dist/htmlpdfx.global.js",
+  "jsdelivr": "./dist/htmlpdfx.global.js",
   "browser": {
     "./dist/index.js": "./dist/browser.js"
   },

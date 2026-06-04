@@ -28,6 +28,28 @@ npm i playwright          # or: playwright-core / puppeteer-core
 > The **core has no required runtime dependencies** — the PDF writer and DOM
 > rasterizer are built in. The Chromium engine is purely additive.
 
+### Without a bundler (CDN / `<script>`)
+
+A prebuilt UMD/IIFE global ships in the package and is served by the CDNs:
+
+```html
+<!-- Global build → window.htmlpdfx -->
+<script src="https://unpkg.com/htmlpdfx"></script>
+<script>
+  htmlpdfx.toPdf(document.getElementById("invoice")).then((pdf) =>
+    pdf.download("invoice.pdf")
+  );
+</script>
+
+<!-- …or ES modules straight from a CDN -->
+<script type="module">
+  import { toPdf } from "https://esm.sh/htmlpdfx";
+</script>
+```
+
+The browser build uses the self-contained canvas engine — no Chromium, no
+install.
+
 ## Your first PDF
 
 ::: code-group
