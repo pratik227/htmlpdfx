@@ -11,7 +11,7 @@ hero:
       link: /guide/getting-started
     - theme: alt
       text: Issues we fix
-      link: /issues
+      link: /capabilities
     - theme: alt
       text: API
       link: /api/

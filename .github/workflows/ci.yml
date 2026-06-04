@@ -84,3 +84,29 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+
+  # Build the docs site and verify every internal link resolves (no 404s).
+  docs:
+    name: docs (link check)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run docs:build
+      - name: Serve docs and check links
+        env:
+          BASE: http://localhost:4173
+        run: |
+          npx vitepress preview docs --port 4173 &
+          SERVER_PID=$!
+          for i in $(seq 1 30); do
+            curl -sf http://localhost:4173 >/dev/null && break
+            sleep 1
+          done
+          npm run docs:check-links
+          kill $SERVER_PID 2>/dev/null || true
