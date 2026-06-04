@@ -51,6 +51,33 @@ export function buildInjectedCss(opts: NormalizedOptions): string {
     );
   }
 
+  // Smart pagination: zero-config print-CSS that fixes the most common
+  // "my PDF looks wrong" problems. Enabled by default; fully tunable.
+  const sp = opts.smartPagination;
+  if (sp) {
+    if (sp.repeatTableHeaders) {
+      // Re-print table headers/footers on every page the table spans.
+      parts.push(`thead { display: table-header-group; }`);
+      parts.push(`tfoot { display: table-footer-group; }`);
+    }
+    if (sp.avoidSplit) {
+      // Never slice these atomic blocks across a page boundary.
+      parts.push(
+        `tr, img, svg, canvas, figure, blockquote, pre, li { break-inside: avoid; page-break-inside: avoid; }`
+      );
+    }
+    if (sp.keepHeadingsWithContent) {
+      // A heading should never be the last thing on a page.
+      parts.push(
+        `h1, h2, h3, h4, h5, h6 { break-after: avoid; page-break-after: avoid; }`
+      );
+    }
+    // Orphan/widow control for flowing text.
+    parts.push(
+      `p, li, blockquote { orphans: ${sp.orphans}; widows: ${sp.widows}; }`
+    );
+  }
+
   // Make backgrounds/colors print as authored (the #1 "colors missing" fix).
   parts.push(
     `* { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }`

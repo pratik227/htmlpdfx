@@ -41,6 +41,16 @@
       "import": "./dist/browser.js",
       "require": "./dist/browser.cjs"
     },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js",
+      "require": "./dist/react.cjs"
+    },
+    "./vue": {
+      "types": "./dist/vue.d.ts",
+      "import": "./dist/vue.js",
+      "require": "./dist/vue.cjs"
+    },
     "./package.json": "./package.json"
   },
   "main": "./dist/index.cjs",
@@ -74,7 +84,11 @@
   "peerDependencies": {
     "playwright": "*",
     "playwright-core": "*",
-    "puppeteer-core": "*"
+    "puppeteer-core": "*",
+    "react": ">=17",
+    "react-dom": ">=17",
+    "vue": ">=3",
+    "@vue/server-renderer": ">=3"
   },
   "peerDependenciesMeta": {
     "puppeteer-core": {
@@ -84,6 +98,18 @@
       "optional": true
     },
     "playwright-core": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "vue": {
+      "optional": true
+    },
+    "@vue/server-renderer": {
       "optional": true
     }
   },

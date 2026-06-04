@@ -7,6 +7,43 @@ htmlpdfx gives you reliable page breaks in two ways:
 - **canvas engine** → a measured slicer ends pages at forced breaks and backs
   up so an atomic block (a table row, a card, a figure) is **never split**.
 
+## Smart pagination (on by default)
+
+Most "my PDF paginates badly" problems are solved by a handful of print-CSS
+rules that almost nobody remembers to write. htmlpdfx injects them for you —
+no configuration required:
+
+- **Repeating table headers** — `<thead>` (and `<tfoot>`) re-print on every
+  page a long table spans.
+- **No split rows/media** — table rows, images, SVG, figures, blockquotes,
+  `<pre>`, and list items never break across a page boundary.
+- **Headings stay with their content** — a heading is never stranded alone at
+  the bottom of a page.
+- **Orphan/widow control** — at least 3 lines of a paragraph stay together
+  across a page break.
+
+```ts
+// Default — nothing to configure.
+await toPdf(html);
+
+// Tune individual behaviors.
+await toPdf(html, {
+  smartPagination: {
+    repeatTableHeaders: true,
+    avoidSplit: true,
+    keepHeadingsWithContent: true,
+    orphans: 2,
+    widows: 2,
+  },
+});
+
+// Opt out entirely.
+await toPdf(html, { smartPagination: false });
+```
+
+Smart pagination is additive — your own CSS `break-*` rules and the
+`pageBreak` options below always win.
+
 ## Options
 
 ```ts

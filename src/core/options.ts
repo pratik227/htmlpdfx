@@ -33,6 +33,13 @@ export interface NormalizedOptions {
     avoid: string[];
     mode: Array<"css" | "legacy" | "avoid-all">;
   };
+  smartPagination: {
+    repeatTableHeaders: boolean;
+    avoidSplit: boolean;
+    keepHeadingsWithContent: boolean;
+    orphans: number;
+    widows: number;
+  } | null;
   header?: { template: string; heightMm?: number };
   footer?: { template: string; heightMm?: number };
   metadata: NonNullable<HtmlPdfxOptions["metadata"]>;
@@ -97,6 +104,21 @@ function normalizeMargin(margin: Margin | undefined, unit: Unit): NormalizedMarg
   return { topMm: v, rightMm: v, bottomMm: v, leftMm: v };
 }
 
+function normalizeSmartPagination(
+  sp: HtmlPdfxOptions["smartPagination"]
+): NormalizedOptions["smartPagination"] {
+  // Default: enabled with all behaviors on. `false` disables it entirely.
+  if (sp === false) return null;
+  const o = sp == null || sp === true ? {} : sp;
+  return {
+    repeatTableHeaders: o.repeatTableHeaders ?? true,
+    avoidSplit: o.avoidSplit ?? true,
+    keepHeadingsWithContent: o.keepHeadingsWithContent ?? true,
+    orphans: o.orphans ?? 3,
+    widows: o.widows ?? 3,
+  };
+}
+
 export function normalizeOptions(opts: HtmlPdfxOptions = {}): NormalizedOptions {
   const unit: Unit = opts.unit ?? "mm";
   const orientation: Orientation = opts.orientation ?? "portrait";
@@ -115,6 +137,7 @@ export function normalizeOptions(opts: HtmlPdfxOptions = {}): NormalizedOptions 
   const pb = opts.pageBreak ?? {};
 
   return {
+    smartPagination: normalizeSmartPagination(opts.smartPagination),
     engine: opts.engine ?? "auto",
     unit,
     orientation,

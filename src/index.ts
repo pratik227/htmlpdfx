@@ -29,6 +29,8 @@ export type * from "./types.js";
 export { HtmlPdfxError } from "./utils/errors.js";
 export type { ErrorCode } from "./utils/errors.js";
 export { computePageSlices } from "./core/paginate.js";
+export { engineCapabilities, describeEngines } from "./core/capabilities.js";
+export type { EngineId, EngineCapability } from "./core/capabilities.js";
 export { detectRuntime } from "./runtime.js";
 // Low-level building blocks (advanced / zero-dependency usage).
 export { PdfWriter, PdfPage } from "./pdf/writer.js";

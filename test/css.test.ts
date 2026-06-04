@@ -40,4 +40,39 @@ describe("buildInjectedCss", () => {
     const css = buildInjectedCss(normalizeOptions({ css: ".x{color:red}" }));
     expect(css.trim().endsWith(".x{color:red}")).toBe(true);
   });
+
+  describe("smart pagination", () => {
+    it("is on by default: repeats table headers and avoids splitting", () => {
+      const css = buildInjectedCss(normalizeOptions());
+      expect(css).toContain("thead { display: table-header-group; }");
+      expect(css).toContain("tfoot { display: table-footer-group; }");
+      expect(css).toMatch(/tr,.*\{ break-inside: avoid/);
+      expect(css).toMatch(/h1, h2, h3, h4, h5, h6 \{ break-after: avoid/);
+      expect(css).toContain("orphans: 3; widows: 3;");
+    });
+
+    it("emits nothing when disabled", () => {
+      const css = buildInjectedCss(normalizeOptions({ smartPagination: false }));
+      expect(css).not.toContain("table-header-group");
+      expect(css).not.toContain("orphans:");
+    });
+
+    it("honors granular toggles and custom orphan/widow counts", () => {
+      const css = buildInjectedCss(
+        normalizeOptions({
+          smartPagination: {
+            repeatTableHeaders: false,
+            keepHeadingsWithContent: false,
+            orphans: 2,
+            widows: 4,
+          },
+        })
+      );
+      expect(css).not.toContain("table-header-group");
+      expect(css).not.toMatch(/h1, h2, h3, h4, h5, h6 \{ break-after: avoid/);
+      // avoidSplit still defaults on.
+      expect(css).toMatch(/tr,.*\{ break-inside: avoid/);
+      expect(css).toContain("orphans: 2; widows: 4;");
+    });
+  });
 });

@@ -1,42 +1,76 @@
 # Capabilities
 
-What htmlpdfx handles, and where each behavior is verified in the test suite.
+htmlpdfx has **two rendering tiers**, and they are deliberately *not* equal.
+Knowing which one you're on is the difference between "my PDF matches my
+webpage" and "close enough."
 
-Legend — **C** = chromium engine, **B** = built-in browser (canvas) engine.
+## The two tiers
 
-| Capability | Behavior | Engine | Verified by |
-|---|---|:--:|---|
-| Page breaks | Pages end exactly at forced breaks; `before`/`after`/`avoid` honored | C · B | `paginate.test`, `behavior.test` |
-| No blank pages | Page count is exactly `ceil(content / page)`; no leading/trailing blanks | C · B | `paginate.test`, `behavior.test` |
-| Large documents | Tall content paginates via per-page bands — no over-tall canvas | B | `behavior.test` |
-| Atomic blocks | Table rows, cards, figures never split across a page | C · B | `paginate.test`, `behavior.test` |
-| Selectable text | Real vector text layer; footer page numbers are selectable | C · B | `behavior.test`, `pdfwriter.test` |
-| Images | Every image awaited before render; inlined to avoid CORS taint | C · B | `behavior.test`, harness |
-| Web fonts | `document.fonts.ready` awaited; fonts embedded | C · B | harness |
-| Modern CSS | flexbox, grid, CSS variables, `oklch()`/`lab()` colors | C · B | `css.test`, frameworks harness |
-| Background colors | `print-color-adjust: exact`; explicit page background | C · B | `behavior.test` |
-| Margins | Uniform margins applied to every page, including continuations | C · B | `behavior.test` |
-| Headers & footers | `{{page}}` / `{{pages}}` / `{{title}}` tokens on every page | C · B | `behavior.test` |
-| Page size & orientation | Explicit size/orientation preserved; never auto-flipped | C · B | `behavior.test` |
-| Scaling / overflow | Content reflows to printable width; `px` handled 1:1 | C · B | `behavior.test`, `units.test` |
-| Unicode / i18n | Any glyph renders; PDF strings safely escaped | C | `behavior.test` |
-| RTL / bidi | Browser bidi engine | C | C |
-| Clickable links | `<a href>` preserved as link annotations | C | C |
-| Quality / DPI | Configurable device scale (default 2×) | B | `behavior.test` |
-| Cross-browser | Valid PDF in Chromium, Firefox, and WebKit (Safari) | B | `cross-browser.mjs` |
-| Cross-platform | Windows / Ubuntu / macOS, Node 18–22 + Bun | C · B | CI matrix |
-| Server-side | Runs headless; no `window`/`document` assumptions | C | `behavior.test`, `runtime.test` |
-| Valid output | Structurally valid PDF (header, xref offsets, trailer) | C · B | `pdfwriter.test` |
+### 🟢 Chromium engine — high fidelity (recommended)
+
+The browser's own print-to-PDF, via Puppeteer (bundled) or Playwright. **The
+PDF _is_ the webpage**, rendered by the same engine — so page breaks, fonts,
+CSS, and layout are correct by construction. Runs on Node, Bun, and Deno.
+
+This is the tier you want for anything user-facing. It's the default whenever a
+Chromium driver is available.
+
+### 🟡 Canvas engine — best effort (fallback)
+
+A zero-dependency DOM rasterizer for the browser when Chromium isn't available.
+It produces a faithful *screenshot* of your DOM, sliced cleanly across pages —
+but it is a raster, not a reflow. Use it as graceful degradation, not as a
+replacement for the real engine.
+
+## What each tier supports
+
+| Capability | 🟢 Chromium | 🟡 Canvas | Notes |
+|---|:--:|:--:|---|
+| **Selectable / searchable text** | ✅ | ❌ | Canvas rasterizes body text into the page image |
+| **Vector graphics (crisp at any zoom)** | ✅ | ❌ | Canvas embeds a raster image |
+| **Clickable links (`<a href>`)** | ✅ | ❌ | Flattened in the canvas tier |
+| **Native CSS page breaks (`break-*`, `@page`)** | ✅ | ⚠️ | Canvas uses a measured slicer, not a layout engine |
+| **Repeating table headers (`<thead>`)** | ✅ | ❌ | Free in Chromium via `table-header-group` |
+| **Smart pagination defaults** | ✅ | ⚠️ | Injected print-CSS; canvas honors what it can |
+| **No split rows / figures / images** | ✅ | ✅ | Both keep atomic blocks whole |
+| **No blank pages** | ✅ | ✅ | Exactly `ceil(content / page)` |
+| **Full modern CSS (grid, flexbox, `oklch()`)** | ✅ | ⚠️ | Canvas depends on the browser's `foreignObject` support |
+| **Web fonts** | ✅ | ✅ | `document.fonts.ready` awaited; embedded |
+| **Background colors** | ✅ | ✅ | `print-color-adjust: exact` |
+| **Headers & footers (`{{page}}`/`{{pages}}`)** | ✅ | ✅ | Selectable in Chromium; rasterized in canvas |
+| **Page size & orientation** | ✅ | ✅ | Never auto-flipped |
+| **RTL / bidi text** | ✅ | ⚠️ | Chromium uses the real bidi engine |
+| **Unicode / i18n** | ✅ | ✅ | Any glyph; PDF strings safely escaped |
+| **Configurable DPI / scale** | ✅ | ✅ | Canvas defaults to 2× device scale |
+| **Runs server-side (headless)** | ✅ | ❌ | Canvas needs a DOM |
+| **Zero install** | ❌¹ | ✅ | ¹ puppeteer ships as an optional dependency |
+
+✅ supported · ⚠️ partial / best-effort · ❌ not supported
+
+> **Rule of thumb:** if the output is for a human (invoices, reports, tickets),
+> use the Chromium tier. The canvas tier exists so a browser-only build still
+> produces *something* when Chromium can't run.
+
+## Inspect tiers in code
+
+The same matrix is available programmatically, so you can branch or warn at
+runtime:
+
+```ts
+import { engineCapabilities, describeEngines } from "htmlpdfx";
+
+engineCapabilities.chromium.selectableText; // true
+engineCapabilities.canvas.tier;             // "best-effort"
+describeEngines();                          // one-line summary
+```
 
 ## Roadmap
 
-Not yet implemented (documented limitations):
+Documented limitations, not yet implemented:
 
 - **Interactive form fields** (AcroForm widgets).
 - **Password / encryption** (user/owner passwords, permission flags).
-
-For a selectable text layer use the **chromium** engine; the built-in browser
-engine rasterizes body text.
+- **Browser `<PdfExport>` component** for client-side React/Vue export.
 
 ## Run the checks
 

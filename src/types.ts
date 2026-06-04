@@ -73,6 +73,41 @@ export interface PageBreakOptions {
   mode?: Array<"css" | "legacy" | "avoid-all">;
 }
 
+/**
+ * Smart pagination tuning. When enabled (the default), htmlpdfx injects a small
+ * set of battle-tested print-CSS rules so HTML paginates well with zero config —
+ * the rules that solve the most common "my PDF looks wrong" complaints.
+ *
+ * Set `smartPagination: false` to opt out entirely, or pass an object to toggle
+ * individual behaviors.
+ */
+export interface SmartPaginationOptions {
+  /**
+   * Repeat `<thead>` (and `<tfoot>`) on every page a table spans, via
+   * `display: table-header-group`. Default `true`.
+   */
+  repeatTableHeaders?: boolean;
+  /**
+   * Never split these atomic blocks across a page boundary
+   * (`break-inside: avoid`): table rows, images, SVG, figures, blockquotes,
+   * `<pre>`, and list items. Default `true`.
+   */
+  avoidSplit?: boolean;
+  /**
+   * Keep a heading attached to the content that follows it (`break-after: avoid`)
+   * so titles never strand at the bottom of a page. Default `true`.
+   */
+  keepHeadingsWithContent?: boolean;
+  /**
+   * Minimum lines of a paragraph left at the bottom of a page. Default `3`.
+   */
+  orphans?: number;
+  /**
+   * Minimum lines of a paragraph carried to the top of the next page. Default `3`.
+   */
+  widows?: number;
+}
+
 /** Header/footer rendered on every page (chromium engine). */
 export interface HeaderFooterOptions {
   /** HTML template. Supports `{{page}}`, `{{pages}}`, `{{title}}`, `{{date}}`. */
@@ -139,6 +174,12 @@ export interface HtmlPdfxOptions {
   margin?: Margin;
   /** Page-break control. */
   pageBreak?: PageBreakOptions;
+  /**
+   * Zero-config print-CSS that makes HTML paginate well (repeat table headers,
+   * avoid splitting rows/images, keep headings with content, orphan/widow
+   * control). Default `true`. Set `false` to disable, or pass an object to tune.
+   */
+  smartPagination?: boolean | SmartPaginationOptions;
   /** Repeating header (chromium engine). */
   header?: HeaderFooterOptions;
   /** Repeating footer (chromium engine). */
