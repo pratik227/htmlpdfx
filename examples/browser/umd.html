@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>htmlpdfx UMD global → PDF</title>
+    <!-- Standalone global build → window.htmlpdfx. No bundler, no import map. -->
+    <script src="/dist/htmlpdfx.global.js"></script>
+  </head>
+  <body>
+    <div id="report" style="font-family: system-ui; padding: 24px; max-width: 700px">
+      <h1 style="color: #0f766e">UMD Global Invoice</h1>
+      <p>Loaded via a plain &lt;script&gt; tag — <code>window.htmlpdfx</code>.</p>
+      <table style="width: 100%; border-collapse: collapse">
+        <thead><tr><th style="border:1px solid #ccc;padding:4px">#</th><th style="border:1px solid #ccc;padding:4px">Item</th></tr></thead>
+        <tbody>
+          <tr><td style="border:1px solid #ccc;padding:4px">1</td><td style="border:1px solid #ccc;padding:4px">First</td></tr>
+          <tr><td style="border:1px solid #ccc;padding:4px">2</td><td style="border:1px solid #ccc;padding:4px">Second</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <button id="download">Download PDF</button>
+
+    <script>
+      document.getElementById("download").addEventListener("click", function () {
+        htmlpdfx
+          .toPdf({ element: document.getElementById("report") }, { format: "a4", margin: 12 })
+          .then(function (pdf) {
+            return pdf.download("umd-invoice.pdf");
+          });
+      });
+    </script>
+  </body>
+</html>

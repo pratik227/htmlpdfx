@@ -4,9 +4,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>htmlpdfx — browser example</title>
-    <!-- The canvas engine needs jspdf + html2canvas available in the browser. -->
-    <script src="https://cdn.jsdelivr.net/npm/jspdf@2/dist/jspdf.umd.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1/dist/html2canvas.min.js"></script>
+    <!-- No jspdf, no html2canvas. The canvas engine is fully self-contained. -->
   </head>
   <body>
     <div id="doc" style="font-family: system-ui; padding: 24px; max-width: 700px">

@@ -62,6 +62,10 @@ jobs:
       - run: npm run build
       - run: npx playwright install --with-deps chromium firefox webkit
       - run: npm run test:browser
+      # Drive the UMD/ESM/Vue/React examples and assert each downloads a PDF.
+      - run: npm run test:browser-download
+        env:
+          HTMLPDFX_BROWSER_REQUIRE: "1"
 
   # End-to-end Chromium PDF: render real HTML and ASSERT on the produced PDF
   # (page count, selectable text, repeating headers, links, outline, pooling).

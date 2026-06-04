@@ -96,6 +96,32 @@ In the browser, pass the rendered element (`{ element: ref.current }`); on the
 server, use the adapters above or render the component to an HTML string and
 hand it to `toPdf` with the chromium engine.
 
+### No-bundler browser usage (import maps)
+
+You can run htmlpdfx straight from a `<script type="module">` with an import
+map — pointing at the **ES-module** builds (the same pattern Vue's CDN guide
+recommends):
+
+```html
+<script type="importmap">
+  {
+    "imports": {
+      "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.prod.js",
+      "htmlpdfx": "https://esm.sh/htmlpdfx"
+    }
+  }
+</script>
+<script type="module">
+  import { createApp } from "vue";
+  import { toPdf } from "htmlpdfx";
+  // …mount your app, then: (await toPdf({ element: el })).download("out.pdf")
+</script>
+```
+
+Runnable Vue (ESM), React (UMD), and plain UMD/ESM examples live in
+[`examples/browser/`](https://github.com/pratik227/htmlpdfx/tree/main/examples/browser),
+and each is verified end-to-end (real PDF download) in CI via Playwright.
+
 ::: tip Verified
 Tailwind utilities, `oklch` colors, CSS grid, flexbox, and shadcn-style CSS
 variables are all exercised by `test/frameworks-harness.html`, run through real

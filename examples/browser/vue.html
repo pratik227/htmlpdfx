@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>htmlpdfx + Vue (ESM / import map) → PDF</title>
+
+    <!-- Teach the browser where to find bare imports. Both point at the
+         ES-modules builds, exactly as the Vue CDN guide recommends. -->
+    <script type="importmap">
+      {
+        "imports": {
+          "vue": "/node_modules/vue/dist/vue.esm-browser.prod.js",
+          "htmlpdfx": "/dist/browser.js"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <button id="download">Download PDF</button>
+
+    <script type="module">
+      import { createApp, ref } from "vue";
+      import { toPdf } from "htmlpdfx";
+
+      createApp({
+        setup() {
+          return { title: ref("Vue Invoice"), rows: ref([1, 2, 3, 4, 5]) };
+        },
+        template: `
+          <div id="report" style="font-family: system-ui; padding: 24px; max-width: 700px">
+            <h1 style="color:#1d4ed8">{{ title }}</h1>
+            <p>Rendered by Vue in the browser, then exported with htmlpdfx.</p>
+            <table style="width:100%; border-collapse:collapse">
+              <thead><tr><th style="border:1px solid #ccc;padding:4px">#</th><th style="border:1px solid #ccc;padding:4px">Item</th></tr></thead>
+              <tbody>
+                <tr v-for="r in rows" :key="r">
+                  <td style="border:1px solid #ccc;padding:4px">{{ r }}</td>
+                  <td style="border:1px solid #ccc;padding:4px">Line item {{ r }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>`,
+      }).mount("#app");
+
+      document.getElementById("download").addEventListener("click", async () => {
+        const pdf = await toPdf(
+          { element: document.getElementById("report") },
+          { format: "a4", margin: 12 }
+        );
+        await pdf.download("vue-invoice.pdf");
+      });
+    </script>
+  </body>
+</html>

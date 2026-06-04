@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>htmlpdfx + React → PDF</title>
+
+    <!-- React/ReactDOM as UMD globals (no build step / JSX needed). -->
+    <script src="/node_modules/react/umd/react.production.min.js"></script>
+    <script src="/node_modules/react-dom/umd/react-dom.production.min.js"></script>
+
+    <!-- htmlpdfx as an ES module via import map. -->
+    <script type="importmap">
+      { "imports": { "htmlpdfx": "/dist/browser.js" } }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <button id="download">Download PDF</button>
+
+    <script type="module">
+      import { toPdf } from "htmlpdfx";
+      const { createElement: h } = React;
+      const { createRoot } = ReactDOM;
+      const { flushSync } = ReactDOM;
+
+      function Report() {
+        const rows = [1, 2, 3, 4, 5];
+        return h(
+          "div",
+          { id: "report", style: { fontFamily: "system-ui", padding: 24, maxWidth: 700 } },
+          h("h1", { style: { color: "#7c3aed" } }, "React Invoice"),
+          h("p", null, "Rendered by React in the browser, then exported with htmlpdfx."),
+          h(
+            "table",
+            { style: { width: "100%", borderCollapse: "collapse" } },
+            h("thead", null, h("tr", null, h("th", { style: cell }, "#"), h("th", { style: cell }, "Item"))),
+            h(
+              "tbody",
+              null,
+              rows.map((r) =>
+                h("tr", { key: r }, h("td", { style: cell }, r), h("td", { style: cell }, "Line item " + r))
+              )
+            )
+          )
+        );
+      }
+      const cell = { border: "1px solid #ccc", padding: "4px" };
+
+      // flushSync guarantees the DOM is painted before we read it.
+      flushSync(() => createRoot(document.getElementById("app")).render(h(Report)));
+
+      document.getElementById("download").addEventListener("click", async () => {
+        const pdf = await toPdf(
+          { element: document.getElementById("report") },
+          { format: "a4", margin: 12 }
+        );
+        await pdf.download("react-invoice.pdf");
+      });
+    </script>
+  </body>
+</html>
