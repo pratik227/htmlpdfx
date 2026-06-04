@@ -5,6 +5,13 @@ on:
     branches: [main]
   pull_request:
 
+# puppeteer is an optional dependency that bundles Chromium. Skip that ~150MB
+# download for the build/unit/browser jobs — they don't need a real browser
+# (browser jobs install Playwright explicitly; the core unit suite is engine
+# -agnostic). The dedicated e2e job re-enables the download below.
+env:
+  PUPPETEER_SKIP_DOWNLOAD: "true"
+
 jobs:
   # Unit tests + build across all three desktop OSes and supported Node versions.
   unit:
@@ -21,9 +28,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
           cache: npm
-      # Skip the optional puppeteer/Chromium download: unit tests cover the
-      # engine-agnostic core. The dedicated e2e job exercises the real browser.
-      - run: npm ci --omit=optional
+      - run: npm ci
       - run: npm run build
       - run: npm run typecheck
       - run: npm test
@@ -35,7 +40,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: oven-sh/setup-bun@v2
-      - run: bun install --omit=optional
+      - run: bun install
       - run: bun run build
       - run: bunx vitest run
 
@@ -53,7 +58,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - run: npm ci --omit=optional
+      - run: npm ci
       - run: npm run build
       - run: npx playwright install --with-deps chromium firefox webkit
       - run: npm run test:browser
@@ -62,6 +67,9 @@ jobs:
   e2e-chromium:
     name: e2e chromium (ubuntu)
     runs-on: ubuntu-latest
+    # This job needs a real browser, so allow puppeteer's Chromium download.
+    env:
+      PUPPETEER_SKIP_DOWNLOAD: "false"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -69,6 +77,5 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci
-      - run: npm i puppeteer --no-save
       - run: npm run build
       - run: node examples/node-basic.mjs || true
