@@ -69,10 +69,11 @@ jobs:
     name: e2e chromium (ubuntu)
     runs-on: ubuntu-latest
     env:
-      # This job needs a real browser, so allow puppeteer's Chromium download…
-      PUPPETEER_SKIP_DOWNLOAD: "false"
-      # …and treat a missing browser as a failure, not a silent skip.
+      # Treat a missing browser as a failure, not a silent skip…
       HTMLPDFX_E2E_REQUIRE: "1"
+      # …and pin the driver to the one we install a browser for below, so the
+      # test doesn't depend on puppeteer's (flaky) optional Chromium download.
+      HTMLPDFX_E2E_DRIVER: "playwright"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -81,4 +82,5 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+      - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e

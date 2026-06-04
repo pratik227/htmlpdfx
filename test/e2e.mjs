@@ -73,10 +73,13 @@ async function loadPdf(bytes) {
 }
 
 async function main() {
+  // Allow CI to pin a specific driver (e.g. the one whose browser it installed),
+  // so the test doesn't depend on which optional driver happened to resolve.
+  const driver = process.env.HTMLPDFX_E2E_DRIVER || undefined;
   const renderer = await createRenderer({
     format: "a4",
     margin: 12,
-    chromium: { outline: true }, // tagged is on by default
+    chromium: { outline: true, driver }, // tagged is on by default
     footer: { template: "Page {{page}} / {{pages}}" },
   });
 
