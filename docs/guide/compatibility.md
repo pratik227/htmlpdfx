@@ -43,6 +43,7 @@ the `auto` engine picks accordingly — no global monkey-patching, and no
 ## Running the checks yourself
 
 ```bash
-npm test             # unit + issue-coverage suite
+npm test             # unit + behavior suite
 npm run test:browser # Chromium + Firefox + WebKit (needs `npx playwright install`)
+npm run test:e2e     # assert on a real Chromium-produced PDF
 ```

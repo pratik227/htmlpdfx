@@ -1,0 +1,20 @@
+# Keep the two structured forms as the only ways to open an issue, so reports
+# always arrive with the engine + repro fields filled in.
+blank_issues_enabled: false
+
+contact_links:
+  - name: 📖 Documentation
+    url: https://github.com/pratik227/htmlpdfx/tree/main/docs
+    about: Guide, API reference, capability matrix, and the html2pdf.js migration guide.
+
+  - name: 🔒 Report a security vulnerability
+    url: https://github.com/pratik227/htmlpdfx/security/advisories/new
+    about: Please report privately, never as a public issue. See SECURITY.md for the threat model.
+
+  - name: 💬 Question or help using htmlpdfx
+    url: mailto:pratikpatelpp802@gmail.com
+    about: For usage questions rather than bugs. Include your engine and runtime.
+
+  - name: 💜 Sponsor this project
+    url: https://github.com/sponsors/pratik227
+    about: Support ongoing maintenance of htmlpdfx.

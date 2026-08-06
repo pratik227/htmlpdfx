@@ -4,24 +4,11 @@ htmlpdfx is intentionally small and layered. The **core has zero runtime
 dependencies** — both the PDF writer and the DOM rasterizer are written from
 scratch and live in the package.
 
-```
-toPdf(input, options)
-        │
-   normalizeOptions ──► one canonical, unit-free config (mm internally)
-        │
-   resolveInput ──────► { html | url | file | element }
-        │
-   selectEngine ──────► auto → chromium (server) | canvas (browser)
-        │
-   ┌────┴───────────────────────────────┐
-   │ chromium engine                     │ canvas engine (browser)
-   │  • puppeteer / playwright           │  • renderDomToImage (SVG foreignObject)
-   │  • page.pdf() — vector text         │  • computePageSlices  (page breaks)
-   │  • native CSS page breaks           │  • PdfWriter          (own PDF writer)
-   └────┬───────────────────────────────┘
-        │
-   PdfResult ─────────► bytes / save / download / toBlob / toDataUrl
-```
+## The render pipeline
+
+Every render walks the same path. Only the middle step branches:
+
+<PipelineDiagram />
 
 ## Why not jsPDF + html2canvas?
 

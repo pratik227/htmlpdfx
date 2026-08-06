@@ -5,15 +5,17 @@ default) picks the best one for the current runtime.
 
 ## `chromium` — high fidelity (Node / Bun)
 
+<EngineBadge engine="chromium" tier />
+
 Drives a real browser through **Puppeteer or Playwright** (whichever is
 installed) and uses its native `page.pdf()`.
 
-- ✅ **Selectable, searchable vector text**
-- ✅ Perfect CSS — flexbox, grid, web fonts, `oklch()`/`lab()` colors
-- ✅ Native CSS page breaks (`break-before`, `break-inside: avoid`, `@page`)
-- ✅ Repeating `<thead>` on multi-page tables (browser behaviour)
-- ✅ Clickable links preserved
-- ✅ Headers/footers with page numbers
+- <TierMark level="full" :label="false" /> **Selectable, searchable vector text**
+- <TierMark level="full" :label="false" /> Perfect CSS — flexbox, grid, web fonts, `oklch()`/`lab()` colors
+- <TierMark level="full" :label="false" /> Native CSS page breaks (`break-before`, `break-inside: avoid`, `@page`)
+- <TierMark level="full" :label="false" /> Repeating `<thead>` on multi-page tables (browser behaviour)
+- <TierMark level="full" :label="false" /> Clickable links preserved
+- <TierMark level="full" :label="false" /> Headers/footers with page numbers
 
 ```ts
 await toPdf(html, {
@@ -67,6 +69,8 @@ Each render gets its own page/context, so concurrent calls are safe. The
 renderer is server-only (Node/Bun/Deno).
 
 ## `canvas` — built-in (browser)
+
+<EngineBadge engine="canvas" tier />
 
 A **fully self-contained** pipeline — no `jspdf`, no `html2canvas`:
 

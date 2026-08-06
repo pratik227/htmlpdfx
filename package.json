@@ -1,6 +1,6 @@
 {
   "name": "htmlpdfx",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Modern HTML-to-PDF for JavaScript & TypeScript. One unified API across Node, Bun, and the browser. Uses a real Chromium engine when available (selectable text, perfect CSS, native page breaks) and falls back to a fixed canvas pipeline in the browser.",
   "type": "module",
   "license": "MIT",
@@ -26,6 +26,10 @@
   },
   "bugs": {
     "url": "https://github.com/pratik227/htmlpdfx/issues"
+  },
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/pratik227"
   },
   "engines": {
     "node": ">=18"
@@ -65,8 +69,12 @@
   "files": [
     "dist",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "sideEffects": false,
   "scripts": {
     "build": "tsup",
@@ -88,13 +96,13 @@
     "puppeteer": "^25.1.0"
   },
   "peerDependencies": {
+    "@vue/server-renderer": ">=3",
     "playwright": "*",
     "playwright-core": "*",
     "puppeteer-core": "*",
     "react": ">=17",
     "react-dom": ">=17",
-    "vue": ">=3",
-    "@vue/server-renderer": ">=3"
+    "vue": ">=3"
   },
   "peerDependenciesMeta": {
     "puppeteer-core": {
@@ -120,6 +128,8 @@
     }
   },
   "devDependencies": {
+    "@iconify-json/solar": "^1.2.5",
+    "@iconify/utils": "^3.1.4",
     "@types/node": "^22.19.19",
     "pdfjs-dist": "^6.0.227",
     "playwright": "^1.60.0",
@@ -128,7 +138,7 @@
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitepress": "^1.5.0",
-    "vitest": "^2.1.8",
+    "vitest": "^4.1.10",
     "vue": "^3.5.0"
   }
 }

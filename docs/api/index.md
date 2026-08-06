@@ -1,5 +1,7 @@
 # API overview
 
+Two entry points cover everything: a function for one-off renders, and a fluent builder for anyone arriving from html2pdf.js. Both resolve to the same `PdfResult`.
+
 ## `toPdf(input, options?)`
 
 The primary functional API. Returns `Promise<PdfResult>`.

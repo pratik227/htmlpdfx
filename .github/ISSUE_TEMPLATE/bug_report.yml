@@ -1,0 +1,121 @@
+name: 🐛 Bug report
+description: Something produced the wrong PDF, threw, or didn't match the page
+labels: ["bug", "needs triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. **The two things that resolve a PDF bug fastest are
+        the engine you were on and a minimal HTML + options pair** — please don't
+        skip those.
+
+        🔒 Found a security issue? Do **not** file it here — see
+        [SECURITY.md](https://github.com/pratik227/htmlpdfx/blob/main/SECURITY.md).
+
+  - type: checkboxes
+    attributes:
+      label: Before you file
+      options:
+        - label: I searched existing issues and this isn't a duplicate
+          required: true
+        - label: I'm on the latest version of htmlpdfx
+          required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: htmlpdfx version
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: engine
+    attributes:
+      label: Which engine?
+      description: |
+        `describeEngines()` prints this, and the resolved engine is on the result
+        object. The two tiers behave very differently — chromium is a real
+        browser, canvas is a rasterizer — so this is the single most useful field.
+      options:
+        - chromium (Puppeteer or Playwright, server-side)
+        - canvas (built-in browser rasterizer)
+        - auto — not sure which was selected
+    validations:
+      required: true
+
+  - type: dropdown
+    id: runtime
+    attributes:
+      label: Runtime
+      options:
+        - Node
+        - Bun
+        - Browser
+        - Deno
+        - Web worker
+    validations:
+      required: true
+
+  - type: input
+    id: runtime-version
+    attributes:
+      label: Runtime version
+      placeholder: "Node 20.11.0 / Bun 1.1.0 / Chrome 121"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating system
+      options:
+        - macOS
+        - Ubuntu / Linux
+        - Windows
+        - Other (say which below)
+    validations:
+      required: true
+
+  - type: input
+    id: driver
+    attributes:
+      label: Chromium driver + version (chromium engine only)
+      description: Which driver was installed, if any.
+      placeholder: "puppeteer 25.1.0 / playwright 1.60.0 / none"
+
+  - type: textarea
+    id: repro
+    attributes:
+      label: Minimal reproduction
+      description: |
+        The smallest HTML **and** options that still show the problem. Please trim
+        it down — a whole app is much slower to diagnose than 20 lines.
+      render: ts
+      placeholder: |
+        import { toPdf } from "htmlpdfx";
+
+        const pdf = await toPdf(`
+          <table><tr><td>row</td></tr></table>
+        `, { format: "a4", margin: 15, pageBreak: { avoid: ["tr"] } });
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: What actually happened
+      description: |
+        Include the full error and its `code` if it threw (htmlpdfx errors carry a
+        stable code like `NO_ENGINE` or `RENDER_FAILED`). If the PDF was wrong
+        rather than absent, **attach it** — drag it into this box — plus a
+        screenshot of how the page looks in the browser.
+    validations:
+      required: true

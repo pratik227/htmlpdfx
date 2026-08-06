@@ -1,5 +1,7 @@
 # Options
 
+Every option, with its default. Options are validated and normalised before an engine sees them, so an invalid page size or margin fails immediately rather than producing a strange PDF.
+
 ```ts
 interface HtmlPdfxOptions {
   engine?: "auto" | "chromium" | "canvas";   // default "auto"

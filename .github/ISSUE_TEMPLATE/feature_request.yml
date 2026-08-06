@@ -1,0 +1,53 @@
+name: ✨ Feature request
+description: Suggest a capability or an API change
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before filing, please check the
+        [capabilities page](https://github.com/pratik227/htmlpdfx/blob/main/docs/capabilities.md) —
+        it lists what each tier supports and what's already on the roadmap
+        (form fields, encryption, and a browser `<PdfExport>` component are
+        known gaps, so no need to file those).
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe the situation, not the solution — it often changes the answer.
+    validations:
+      required: true
+
+  - type: textarea
+    id: api
+    attributes:
+      label: What would the API look like?
+      description: Sketch the call you wish you could write.
+      render: ts
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: tiers
+    attributes:
+      label: Which tier(s) should this apply to?
+      description: |
+        The canvas tier is a rasterizer with no layout engine, so some things are
+        only possible in chromium. Saying which you need helps scope it.
+      options:
+        - label: chromium (server-side, high fidelity)
+        - label: canvas (browser, best effort)
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you've considered
+      description: Including any workaround you're using now.
+
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Would you be willing to open a PR?
+      options:
+        - label: I'd be happy to implement this with some guidance

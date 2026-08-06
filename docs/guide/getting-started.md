@@ -1,56 +1,28 @@
 # Getting started
 
-## Install
+Install, render, save. On Node and Bun you get the high-fidelity Chromium engine without a second step; in the browser there's nothing extra to install at all.
+
+<Steps>
+
+<Step title="Install">
 
 ```bash
 npm i htmlpdfx
 ```
 
-On **Node / Bun**, this also pulls in [Puppeteer](https://pptr.dev) (which bundles
-Chromium) as an **optional dependency** — so the high-fidelity engine (selectable
-text, perfect CSS, native page breaks) works out of the box with no extra step.
+On **Node** and **Bun** this also brings [Puppeteer](https://pptr.dev) — which bundles Chromium — as an **optional** dependency, so <EngineBadge engine="chromium" /> works out of the box.
 
-The install is resilient: Puppeteer is *optional*, so if its Chromium download is
-unavailable (CI caches, offline, or browser-only targets) `npm i htmlpdfx` still
-succeeds and the built-in renderer is used instead.
+Because it's optional, the install stays resilient: if the Chromium download is unavailable (CI caches, offline, browser-only targets), `npm i htmlpdfx` still succeeds and the built-in renderer is used instead.
+
+Prefer a different driver? Install one and htmlpdfx detects it automatically:
 
 ```bash
-# Node / Bun — Chromium ships by default via the optional puppeteer dependency.
-# Nothing else to install.
-
-# Prefer Playwright or a system Chrome instead? Install one of these and
-# htmlpdfx will detect and use it automatically:
-npm i playwright          # or: playwright-core / puppeteer-core
-
-# Browser — nothing to install; the built-in renderer is used.
+npm i playwright        # or: playwright-core / puppeteer-core
 ```
 
-> The **core has no required runtime dependencies** — the PDF writer and DOM
-> rasterizer are built in. The Chromium engine is purely additive.
+</Step>
 
-### Without a bundler (CDN / `<script>`)
-
-A prebuilt UMD/IIFE global ships in the package and is served by the CDNs:
-
-```html
-<!-- Global build → window.htmlpdfx -->
-<script src="https://unpkg.com/htmlpdfx"></script>
-<script>
-  htmlpdfx.toPdf(document.getElementById("invoice")).then((pdf) =>
-    pdf.download("invoice.pdf")
-  );
-</script>
-
-<!-- …or ES modules straight from a CDN -->
-<script type="module">
-  import { toPdf } from "https://esm.sh/htmlpdfx";
-</script>
-```
-
-The browser build uses the self-contained canvas engine — no Chromium, no
-install.
-
-## Your first PDF
+<Step title="Render your first PDF">
 
 ::: code-group
 
@@ -82,37 +54,103 @@ await htmlpdfx()
 
 :::
 
-## Inputs
+</Step>
 
-```ts
-toPdf("<h1>hi</h1>");                                  // HTML string
-toPdf({ html, baseUrl: "https://cdn.example.com/" });  // HTML + base URL
-toPdf({ url: "https://example.com" });                  // live URL  (chromium)
-toPdf({ file: "/abs/report.html" });                    // local file (chromium)
-toPdf({ element: domNode });                            // DOM node  (browser)
-```
+<Step title="Take the bytes wherever you need them">
 
-## Getting the bytes
-
-Every render returns a `PdfResult`:
+Every render returns a `PdfResult`, so the same call works for a file, an HTTP response, or a download:
 
 ```ts
 const pdf = await toPdf(html);
 
-pdf.bytes;            // Uint8Array
-pdf.pageCount;        // number of pages
-pdf.engine;           // "chromium" | "canvas"
-await pdf.save("out.pdf");      // Node/Bun: write to disk
-await pdf.download("out.pdf");  // Browser: trigger download
-pdf.toBlob();         // browser Blob
-pdf.toDataUrl();      // data: URL
-pdf.toArrayBuffer();  // ArrayBuffer
+pdf.bytes; // Uint8Array
+pdf.pageCount; // number of pages
+pdf.engine; // "chromium" | "canvas" — which tier actually ran
+
+await pdf.save("out.pdf"); // Node / Bun: write to disk
+await pdf.download("out.pdf"); // Browser: trigger a download
+pdf.toBlob(); // Blob
+pdf.toDataUrl(); // data: URL
+pdf.toArrayBuffer(); // ArrayBuffer
+```
+
+</Step>
+
+</Steps>
+
+<Callout type="note" title="No required runtime dependencies">
+
+The PDF writer and the DOM rasterizer are written from scratch and ship inside the package — no `jspdf`, no `html2canvas`. The Chromium engine is purely additive.
+
+</Callout>
+
+## Inputs
+
+Pass a string, a URL, a file, or a live DOM node. The input decides which engines can serve it:
+
+```ts
+toPdf("<h1>hi</h1>"); // HTML string          — either engine
+toPdf({ html, baseUrl: "https://cdn.example.com/" }); // HTML + base URL      — either engine
+toPdf({ url: "https://example.com" }); // live URL             — chromium
+toPdf({ file: "/abs/report.html" }); // local file           — chromium
+toPdf({ element: domNode }); // DOM node             — canvas (browser)
 ```
 
 ## Runtime support
 
-| Runtime    | Default engine | Needs                         |
-| ---------- | -------------- | ----------------------------- |
-| Node ≥ 18  | `chromium`     | `puppeteer` or `playwright`   |
-| Bun        | `chromium`     | `puppeteer` or `playwright`   |
-| Browser    | `canvas`       | nothing (built-in)            |
+| Runtime   | Default engine | Needs                       |
+| --------- | -------------- | --------------------------- |
+| Node ≥ 18 | `chromium`     | `puppeteer` or `playwright` |
+| Bun       | `chromium`     | `puppeteer` or `playwright` |
+| Browser   | `canvas`       | nothing (built in)          |
+
+Force one with `{ engine: "chromium" }` or `{ engine: "canvas" }`; the default `auto` picks per runtime.
+
+## Without a bundler
+
+A prebuilt UMD/IIFE global ships in the package and is served by the CDNs, so the browser needs no npm at all:
+
+```html
+<!-- Global build → window.htmlpdfx -->
+<script src="https://unpkg.com/htmlpdfx"></script>
+<script>
+  htmlpdfx
+    .toPdf(document.getElementById("invoice"))
+    .then((pdf) => pdf.download("invoice.pdf"));
+</script>
+
+<!-- …or ES modules straight from a CDN -->
+<script type="module">
+  import { toPdf } from "https://esm.sh/htmlpdfx";
+</script>
+```
+
+<Callout type="warning" title="The browser build is the canvas tier">
+
+No Chromium means no vector text: body text is rasterized into the page image, so it can't be selected or searched. For selectable output, render server-side. See [what each engine supports](/capabilities).
+
+</Callout>
+
+## Next
+
+<CardGroup :cols="3">
+
+<Card title="Choose an engine" icon="engines" href="/guide/engines">
+
+How `auto` decides, and when to override it.
+
+</Card>
+
+<Card title="Page breaks" icon="breaks" href="/guide/page-breaks">
+
+Forced breaks, and blocks that must stay whole.
+
+</Card>
+
+<Card title="Headers & footers" icon="headers" href="/guide/headers-footers">
+
+Page numbers and repeating furniture.
+
+</Card>
+
+</CardGroup>

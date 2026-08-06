@@ -1,0 +1,613 @@
+/* ==========================================================================
+   htmlpdfx documentation — design system
+
+   COLOUR DISCIPLINE
+   The interface is monochrome: ink on paper, with grey for hierarchy. Colour
+   is reserved for exactly one job — telling you whether an engine supports a
+   capability (green = works, amber = best effort, grey = unsupported). If you
+   see colour on this site, it is carrying information, not decoration.
+
+   TYPE
+   A system-ui stack, no webfonts. A library that ships no runtime
+   dependencies shouldn't have documentation that downloads three font files
+   to say so. The scale is tight and the leading is generous (1.75) — the
+   airiness comes from spacing, not ornament.
+   ========================================================================== */
+
+:root {
+  /* --- Ink and paper ---------------------------------------------------- */
+  --hpx-paper: #ffffff;
+  --hpx-paper-sunk: #fafafa;
+  --hpx-ink: #2a2a2a;
+  --hpx-ink-2: rgba(0, 0, 0, 0.62);
+  --hpx-ink-3: rgba(0, 0, 0, 0.45);
+  --hpx-rule: rgba(0, 0, 0, 0.09);
+  --hpx-rule-strong: rgba(0, 0, 0, 0.16);
+  --hpx-wash: rgba(0, 0, 0, 0.035);
+  --hpx-hover: rgba(0, 0, 0, 0.05);
+
+  /* --- Tier semantics: the only colour in the system -------------------- */
+  --hpx-full: #10704a;
+  --hpx-full-bg: rgba(16, 112, 74, 0.08);
+  --hpx-partial: #8a6100;
+  --hpx-partial-bg: rgba(138, 97, 0, 0.09);
+  --hpx-none: rgba(0, 0, 0, 0.38);
+  --hpx-none-bg: rgba(0, 0, 0, 0.05);
+  /* Reserved for "this will bite you" — the only red on the site. */
+  --hpx-alert: #b3261e;
+  --hpx-alert-bg: rgba(179, 38, 30, 0.07);
+
+  /* --- Metrics --------------------------------------------------------- */
+  --hpx-radius-sm: 6px;
+  --hpx-radius: 8px;
+  --hpx-radius-lg: 12px;
+  --hpx-icon: 17px;
+}
+
+.dark {
+  --hpx-paper: #0d0d0d;
+  --hpx-paper-sunk: #151515;
+  --hpx-ink: #ededed;
+  --hpx-ink-2: rgba(255, 255, 255, 0.64);
+  --hpx-ink-3: rgba(255, 255, 255, 0.45);
+  --hpx-rule: rgba(255, 255, 255, 0.11);
+  --hpx-rule-strong: rgba(255, 255, 255, 0.2);
+  --hpx-wash: rgba(255, 255, 255, 0.04);
+  --hpx-hover: rgba(255, 255, 255, 0.07);
+
+  --hpx-full: #4ecf9a;
+  --hpx-full-bg: rgba(78, 207, 154, 0.12);
+  --hpx-partial: #e0b054;
+  --hpx-partial-bg: rgba(224, 176, 84, 0.13);
+  --hpx-none: rgba(255, 255, 255, 0.36);
+  --hpx-none-bg: rgba(255, 255, 255, 0.06);
+  --hpx-alert: #f28b82;
+  --hpx-alert-bg: rgba(242, 139, 130, 0.12);
+}
+
+/* ==========================================================================
+   Map onto VitePress
+   ========================================================================== */
+
+:root {
+  --vp-font-family-base: ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --vp-font-family-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+    Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  --vp-c-bg: var(--hpx-paper);
+  --vp-c-bg-alt: var(--hpx-paper);
+  --vp-c-bg-soft: var(--hpx-wash);
+  --vp-c-bg-elv: var(--hpx-paper);
+
+  --vp-c-text-1: var(--hpx-ink);
+  --vp-c-text-2: var(--hpx-ink-2);
+  --vp-c-text-3: var(--hpx-ink-3);
+
+  --vp-c-divider: var(--hpx-rule);
+  --vp-c-border: var(--hpx-rule);
+  --vp-c-gutter: var(--hpx-rule);
+
+  /* Links and active states are ink, not a brand colour — see the note above. */
+  --vp-c-brand-1: var(--hpx-ink);
+  --vp-c-brand-2: var(--hpx-ink-2);
+  --vp-c-brand-3: var(--hpx-ink);
+  --vp-c-brand-soft: var(--hpx-hover);
+
+  --vp-nav-height: 56px;
+  --vp-sidebar-width: 258px;
+  --vp-layout-max-width: 1440px;
+
+  --vp-code-block-bg: var(--hpx-paper-sunk);
+  --vp-code-tab-divider: var(--hpx-rule);
+  --vp-code-copy-code-bg: var(--hpx-wash);
+  --vp-code-copy-code-hover-bg: var(--hpx-hover);
+}
+
+.dark {
+  --vp-code-block-bg: #131313;
+}
+
+/* A wider measure than VitePress's default 688px, matching the reference. */
+.VPDoc.has-aside .content-container {
+  max-width: 800px;
+}
+.VPDoc:not(.has-sidebar) .content {
+  max-width: 800px;
+}
+
+/* The home page gets a wider measure — the hero is two columns. */
+.hpx-home-page .VPDoc:not(.has-sidebar) .content,
+.hpx-home-page .VPDoc .content-container {
+  max-width: 1080px;
+}
+.hpx-home-page .VPDoc {
+  padding-top: 0;
+}
+/* On the home page the card grids already separate the sections, so the H2
+   hairlines would only double up on the hero's own rule. */
+.hpx-home-page .vp-doc h2 {
+  font-size: 21px;
+  border-top: none;
+  padding-top: 0;
+  margin-top: 52px;
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.VPNav {
+  border-bottom: 1px solid var(--hpx-rule);
+  backdrop-filter: saturate(180%) blur(12px);
+  background-color: color-mix(in srgb, var(--hpx-paper) 82%, transparent);
+}
+.VPNavBar.has-sidebar .content,
+.VPNavBar .divider {
+  border-bottom: none !important;
+}
+.VPNavBarTitle .title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  font-size: 16px;
+  border-bottom: none;
+}
+.VPNavBarMenuLink,
+.VPNavBarMenuGroup .VPMenuLink {
+  font-size: 14px;
+  font-weight: 400;
+}
+.VPNavBarMenuLink {
+  color: var(--hpx-ink-2);
+}
+.VPNavBarMenuLink:hover,
+.VPNavBarMenuLink.active {
+  color: var(--hpx-ink);
+}
+
+/* Search: a real field rather than a small icon, as in the reference. */
+.VPNavBarSearch .DocSearch-Button,
+.VPNavBarSearch button {
+  border: 1px solid var(--hpx-rule);
+  border-radius: var(--hpx-radius);
+  background: var(--hpx-paper);
+  height: 34px;
+}
+.VPNavBarSearch .DocSearch-Button:hover,
+.VPNavBarSearch button:hover {
+  border-color: var(--hpx-rule-strong);
+  background: var(--hpx-paper);
+}
+
+/* ==========================================================================
+   Sidebar — Solar icons come in through VPSidebarItem's v-html `text`
+   ========================================================================== */
+
+.VPSidebar {
+  border-right: 1px solid var(--hpx-rule);
+  padding-top: 24px;
+}
+
+/* Group headings: small, quiet, and clearly not clickable items. */
+.VPSidebarItem.level-0 > .item > .text {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hpx-ink-3);
+}
+.VPSidebarItem.level-0 {
+  padding-bottom: 4px;
+  margin-bottom: 12px;
+}
+
+/* The icon + label pair emitted by navItem() in icons.ts. */
+.hpx-nav-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.hpx-nav-item > svg {
+  flex: none;
+  width: var(--hpx-icon);
+  height: var(--hpx-icon);
+  opacity: 0.62;
+  transition: opacity 0.15s ease;
+}
+.hpx-nav-item > span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Nested items sit on a hairline, so depth is visible without indent guesswork. */
+.VPSidebarItem.level-1,
+.VPSidebarItem.level-2,
+.VPSidebarItem.level-3 {
+  padding-left: 0;
+  border-left: none;
+}
+.VPSidebarItem.level-1 .items,
+.VPSidebarItem.level-2 .items {
+  margin-left: 8px;
+  padding-left: 12px;
+  border-left: 1px solid var(--hpx-rule);
+}
+
+/* Item rows: a soft pill, matching the reference's rgba(0,0,0,.05) at 8px. */
+.VPSidebarItem.is-link > .item {
+  border-radius: var(--hpx-radius);
+  padding: 7px 10px;
+  margin: 1px 0;
+  transition: background-color 0.15s ease;
+}
+.VPSidebarItem.is-link > .item .link {
+  padding: 0;
+}
+.VPSidebarItem.is-link > .item .text {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  color: var(--hpx-ink-2);
+  padding: 0;
+  transition: color 0.15s ease;
+}
+.VPSidebarItem.is-link > .item:hover {
+  background: var(--hpx-wash);
+}
+.VPSidebarItem.is-link > .item:hover .text {
+  color: var(--hpx-ink);
+}
+.VPSidebarItem.is-link.is-active > .item {
+  background: var(--hpx-hover);
+}
+.VPSidebarItem.is-link.is-active > .item .text {
+  color: var(--hpx-ink);
+  font-weight: 500;
+}
+.VPSidebarItem.is-link.is-active > .item .hpx-nav-item > svg {
+  opacity: 1;
+}
+/* VitePress draws an indicator bar on the active item; the pill replaces it. */
+.VPSidebarItem.is-active > .item .indicator {
+  background-color: transparent;
+}
+
+/* ==========================================================================
+   Content typography — the reference's exact scale
+   ========================================================================== */
+
+.vp-doc {
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.vp-doc h1 {
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+  margin-bottom: 12px;
+}
+.vp-doc h2 {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.33;
+  letter-spacing: -0.02em;
+  margin-top: 48px;
+  margin-bottom: 20px;
+  padding-top: 24px;
+  border-top: 1px solid var(--hpx-rule);
+}
+.vp-doc h3 {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.6;
+  letter-spacing: -0.02em;
+  margin-top: 32px;
+  margin-bottom: 10px;
+}
+.vp-doc h4 {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 24px;
+}
+
+/* The paragraph straight after the H1 is the page's lead — no component
+   needed, it just reads as the deck it already is. */
+.vp-doc h1 + p {
+  font-size: 18px;
+  line-height: 1.65;
+  color: var(--hpx-ink-2);
+  margin-bottom: 8px;
+}
+
+.vp-doc p,
+.vp-doc li {
+  line-height: 1.75;
+}
+.vp-doc p {
+  margin: 16px 0;
+}
+
+.vp-doc a {
+  color: var(--hpx-ink);
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--hpx-rule-strong);
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color 0.15s ease;
+}
+.vp-doc a:hover {
+  text-decoration-color: var(--hpx-ink);
+}
+
+.vp-doc ul,
+.vp-doc ol {
+  padding-left: 1.25rem;
+}
+.vp-doc li + li {
+  margin-top: 6px;
+}
+.vp-doc ul > li::marker {
+  color: var(--hpx-ink-3);
+}
+
+.vp-doc hr {
+  border-top: 1px solid var(--hpx-rule);
+  margin: 40px 0;
+}
+
+.vp-doc blockquote {
+  border-left: 2px solid var(--hpx-rule-strong);
+  padding-left: 16px;
+  color: var(--hpx-ink-2);
+}
+.vp-doc blockquote > p {
+  font-size: 15px;
+}
+
+/* ==========================================================================
+   Code
+   ========================================================================== */
+
+.vp-doc :not(pre) > code {
+  font-size: 13.5px;
+  padding: 2px 5px;
+  border-radius: 4px;
+  background: var(--hpx-wash);
+  color: var(--hpx-ink);
+  border: 1px solid var(--hpx-rule);
+}
+.vp-doc a > code {
+  color: inherit;
+}
+.vp-doc div[class*="language-"] {
+  border-radius: var(--hpx-radius-lg);
+  border: 1px solid var(--hpx-rule);
+  background: var(--hpx-paper-sunk);
+  margin: 20px 0;
+}
+/* Keep enough height for the absolutely-positioned language label and copy
+   button; too little and the `overflow: auto` wrapper sprouts a scrollbar. */
+.vp-doc div[class*="language-"] pre {
+  padding: 16px 0;
+}
+.vp-doc [class*="language-"] code {
+  font-size: 13.5px;
+  line-height: 1.7;
+}
+.vp-doc div[class*="language-"] > span.lang {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hpx-ink-3);
+}
+.vp-doc .vp-code-group .tabs label {
+  font-size: 13px;
+  color: var(--hpx-ink-2);
+}
+
+/* ==========================================================================
+   Tables
+   ========================================================================== */
+
+.vp-doc table {
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 14.5px;
+  overflow-x: auto;
+}
+.vp-doc tr {
+  background: transparent;
+  border-top: 1px solid var(--hpx-rule);
+}
+.vp-doc tr:nth-child(2n) {
+  background: transparent;
+}
+.vp-doc th {
+  text-align: left;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hpx-ink-3);
+  border: none;
+  border-bottom: 1px solid var(--hpx-rule-strong);
+  padding: 8px 12px;
+  background: transparent;
+}
+.vp-doc td {
+  border: none;
+  padding: 10px 12px;
+  vertical-align: top;
+}
+
+/* ==========================================================================
+   Right-hand "On this page"
+   ========================================================================== */
+
+.VPDocAsideOutline .outline-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hpx-ink-3);
+}
+.VPDocAsideOutline .outline-link {
+  font-size: 13.5px;
+  line-height: 1.5;
+  padding: 5px 0;
+  color: var(--hpx-ink-2);
+  transition: color 0.15s ease;
+}
+.VPDocAsideOutline .outline-link:hover,
+.VPDocAsideOutline .outline-link.active {
+  color: var(--hpx-ink);
+}
+.VPDocAsideOutline .outline-marker {
+  background-color: var(--hpx-ink);
+  width: 2px;
+}
+
+/* ==========================================================================
+   Native markdown containers (::: tip / warning / danger / info)
+   restyled to match the Callout component, so plain markdown looks right too
+   ========================================================================== */
+
+.vp-doc .custom-block {
+  border-radius: var(--hpx-radius-lg);
+  border: 1px solid var(--hpx-rule);
+  background: var(--hpx-wash);
+  padding: 14px 16px;
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+.vp-doc .custom-block .custom-block-title {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hpx-ink-3);
+  margin-bottom: 4px;
+}
+.vp-doc .custom-block p {
+  margin: 6px 0;
+}
+.vp-doc .custom-block a {
+  color: var(--hpx-ink);
+}
+.vp-doc .custom-block.tip,
+.vp-doc .custom-block.info {
+  border-color: var(--hpx-rule);
+}
+.vp-doc .custom-block.warning {
+  background: var(--hpx-partial-bg);
+  border-color: color-mix(in srgb, var(--hpx-partial) 26%, transparent);
+}
+.vp-doc .custom-block.warning .custom-block-title {
+  color: var(--hpx-partial);
+}
+.vp-doc .custom-block.danger {
+  background: var(--hpx-none-bg);
+  border-color: var(--hpx-rule-strong);
+}
+
+/* ==========================================================================
+   Shared primitives used by the components
+   ========================================================================== */
+
+.hpx-icon {
+  flex: none;
+  vertical-align: -0.125em;
+}
+
+/* Support marks — the one place colour is allowed to speak. */
+.hpx-mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.hpx-mark svg {
+  width: 16px;
+  height: 16px;
+}
+.hpx-mark--full {
+  color: var(--hpx-full);
+}
+.hpx-mark--partial {
+  color: var(--hpx-partial);
+}
+.hpx-mark--none {
+  color: var(--hpx-none);
+}
+
+/* ==========================================================================
+   Footer, prev/next
+   ========================================================================== */
+
+.VPDocFooter .pager-link {
+  border-radius: var(--hpx-radius-lg);
+  border-color: var(--hpx-rule);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+.VPDocFooter .pager-link:hover {
+  border-color: var(--hpx-rule-strong);
+  background: var(--hpx-wash);
+}
+.VPDocFooter .pager-link .desc {
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--hpx-ink-3);
+}
+.VPDocFooter .pager-link .title {
+  color: var(--hpx-ink);
+  font-weight: 500;
+}
+.VPFooter {
+  border-top: 1px solid var(--hpx-rule);
+  background: transparent;
+}
+.VPFooter .message,
+.VPFooter .copyright {
+  font-size: 13px;
+  color: var(--hpx-ink-3);
+}
+
+/* ==========================================================================
+   Quality floor
+   ========================================================================== */
+
+:where(a, button, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--hpx-ink);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media (max-width: 640px) {
+  .vp-doc h1 {
+    font-size: 30px;
+  }
+  .vp-doc h2 {
+    font-size: 21px;
+  }
+}

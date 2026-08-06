@@ -1,0 +1,41 @@
+version: 2
+
+updates:
+  # Dev dependencies only — htmlpdfx has no required runtime deps, so these
+  # updates can never reach a consumer's install tree.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    groups:
+      # One PR for the toolchain rather than five.
+      dev-toolchain:
+        patterns:
+          - "typescript"
+          - "tsup"
+          - "vitest"
+          - "@types/*"
+      docs:
+        patterns:
+          - "vitepress"
+      # Playwright and the framework peers are what the test matrix runs
+      # against, so review these on their own.
+      test-peers:
+        patterns:
+          - "playwright"
+          - "react"
+          - "react-dom"
+          - "vue"
+          - "pdfjs-dist"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    groups:
+      actions:
+        patterns:
+          - "*"

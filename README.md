@@ -143,8 +143,9 @@ browser renderer is tested in **Chromium (Chrome/Edge), Firefox, and WebKit
 (Safari)** via Playwright — each produces a valid multi-page PDF.
 
 ```bash
-npm test            # unit + issue-coverage suite (Node/Bun)
+npm test             # unit + behavior suite (Node/Bun)
 npm run test:browser # Chromium + Firefox + WebKit rendering
+npm run test:e2e     # assert on a real Chromium-produced PDF
 ```
 
 ## Docs
@@ -155,6 +156,25 @@ Full guide, API reference, and a migration guide live in the VitePress site:
 npm run docs:dev
 ```
 
+## Sponsors
+
+<p align="center">
+  <a href="https://github.com/sponsors/pratik227">
+    <img src="https://raw.githubusercontent.com/pratik227/static/main/sponsors.svg" alt="Sponsors of pratik227" />
+  </a>
+</p>
+
+## Support
+
+If this helped you in any way, you can contribute to this project for long term
+survival by supporting me:
+
+### [💜 Support my open-source work on GitHub](https://github.com/sponsors/pratik227)
+
+Be sure to check out my [sponsor page](https://github.com/sponsors/pratik227).
+
+Thank you so much!!!
+
 ## License
 
-MIT © Pratik Patel
+MIT © [Pratik Patel](https://github.com/pratik227)
