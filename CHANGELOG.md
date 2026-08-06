@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **Agent-readable documentation.** The docs site now serves `/llms.txt` (an
+  index with summaries), `/llms-full.txt` (every page in one fetch), and the
+  markdown source of each page beside it (`/guide/engines.md`). The capability
+  matrix is rendered into a real table for both, so an agent asked "does this
+  support selectable text in the browser?" can read the answer instead of
+  guessing. `AGENTS.md` documents the repo's constraints for coding agents.
+- Security headers for the docs site — a real `default-src 'self'` CSP is
+  possible because the site loads nothing from another origin.
+- `npm run release:check`: pre-publish gates (changelog entry, clean tree,
+  version not already published, and a tarball whose entry points import in
+  both ESM and CJS).
+
+### Fixed
+
+- **Accessibility:** the muted ink tokens sat at 3.3:1, below the WCAG AA floor
+  of 4.5:1 for body-sized text — 11px labels are "normal text" to WCAG, not
+  "large". The three ink levels are now 14.3:1 / 9.2:1 / 5.0:1, and the code
+  theme changed to one whose keyword colour clears 4.5:1. Zero contrast
+  failures across 997 elements, in both themes.
+- **CI:** the test matrix ran Node 18, which Vitest 4 doesn't support. Tests now
+  run on Node 20/22/24, with a separate job proving the package still builds and
+  type-checks on Node 18 — `engines.node` remains `>=18`.
+
 ### Changed
 
 - **Documentation site redesign.** A custom VitePress theme with a monochrome

@@ -9,7 +9,33 @@ export default defineConfig({
   lastUpdated: true,
   cleanUrls: true,
 
-  head: [["link", { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }]],
+  head: [
+    ["link", { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" }],
+    // Lets search engines and agent crawlers identify the package without
+    // parsing prose.
+    [
+      "script",
+      { type: "application/ld+json" },
+      JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        name: "htmlpdfx",
+        description:
+          "Modern HTML to PDF for JavaScript and TypeScript. One API across Node, Bun, and the browser, with no required runtime dependencies.",
+        codeRepository: "https://github.com/pratik227/htmlpdfx",
+        programmingLanguage: ["TypeScript", "JavaScript"],
+        runtimePlatform: ["Node.js", "Bun", "Browser"],
+        license: "https://opensource.org/licenses/MIT",
+        author: { "@type": "Person", name: "Pratik Patel" },
+      }),
+    ],
+  ],
+
+  // github-light's keyword red (#d73a49) lands at 4.38:1 on white, just under
+  // the 4.5:1 WCAG AA floor for body-sized text. The VS Code themes clear it.
+  markdown: {
+    theme: { light: "light-plus", dark: "dark-plus" },
+  },
 
   // Resolves Solar icons into the bundle at build time. Nothing is fetched at
   // runtime, so the docs work offline and under a strict CSP.

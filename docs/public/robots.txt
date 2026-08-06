@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Documentation in a form models can read:
+#   /llms.txt        an index with one-line summaries
+#   /llms-full.txt   every page's text in a single file
+#   /<path>.md       the markdown source beside each page

@@ -9,6 +9,17 @@ updates:
       interval: weekly
       day: monday
     open-pull-requests-limit: 5
+    ignore:
+      # @types/node must track the OLDEST Node we support (engines: >=18), not
+      # the newest release. Bumping it to a future major types APIs that don't
+      # exist on Node 18 and quietly breaks the compatibility promise.
+      - dependency-name: "@types/node"
+        update-types: ["version-update:semver-major"]
+      # A TypeScript major changes type-checking behaviour and .d.ts output.
+      # Worth doing, but deliberately and with the suite watched — not in an
+      # unattended PR.
+      - dependency-name: "typescript"
+        update-types: ["version-update:semver-major"]
     groups:
       # One PR for the toolchain rather than five.
       dev-toolchain:

@@ -10,25 +10,7 @@
  * canvas tier is worse than admitting a gap.
  */
 
-/** full = works properly · partial = best effort · none = not supported */
-export type Support = "full" | "partial" | "none";
-
-export interface Capability {
-  title: string;
-  /** Field on `engineCapabilities`, when this row has a code equivalent. */
-  key?: string;
-  chromium: Support;
-  canvas: Support;
-  /** Why the two tiers differ. Shown under the row title. */
-  note: string;
-}
-
-export interface CapabilityGroup {
-  group: string;
-  items: Capability[];
-}
-
-export const CAPABILITIES: CapabilityGroup[] = [
+export const CAPABILITIES = [
   {
     group: "Text and vectors",
     items: [
@@ -206,13 +188,13 @@ export const TIERS = {
   chromium: {
     label: "Chromium",
     tier: "High fidelity",
-    icon: "chromium" as const,
+    icon: "chromium",
     blurb: "The browser's own print-to-PDF. The PDF is the webpage.",
   },
   canvas: {
     label: "Canvas",
     tier: "Best effort",
-    icon: "canvas" as const,
+    icon: "canvas",
     blurb: "A zero-dependency DOM rasterizer for browser-only builds.",
   },
 };

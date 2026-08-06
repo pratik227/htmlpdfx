@@ -136,10 +136,31 @@ For anything security-related, do **not** open an issue — see
 
 ## Releasing
 
-Maintainers only — see the "Publishing" section of
-[`.github/workflows/release.yml`](.github/workflows/release.yml). In short: bump
-the version, move the `Unreleased` changelog entries under the new version, tag
-`vX.Y.Z`, and push the tag. CI verifies and publishes to npm with provenance.
+Maintainers only. **Publishing is deliberately manual** — CI verifies, but it
+never touches the registry, so no npm token lives in GitHub.
+
+```bash
+# 1. Move the `## [Unreleased]` entries under a heading for the new version,
+#    and update the compare/tag links at the bottom of CHANGELOG.md.
+
+# 2. Bump the version (updates package.json AND package-lock.json).
+npm version patch|minor|major --no-git-tag-version
+
+# 3. Check everything a bad publish would cost you: changelog entry, clean
+#    tree, version not already on the registry, and a tarball whose entry
+#    points actually import in both ESM and CJS.
+npm run release:check
+
+# 4. Publish. prepublishOnly runs typecheck, the test suite, and the build.
+npm publish --access public
+
+# 5. Tag the release so the history matches the registry.
+git commit -am "Release vX.Y.Z" && git tag vX.Y.Z && git push && git push --tags
+```
+
+`npm run test:e2e` and `npm run test:browser` need a browser, so they aren't in
+`prepublishOnly`. Run them yourself before a release that touches an engine, or
+lean on CI having run them on `main`.
 
 ## License
 

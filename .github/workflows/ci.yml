@@ -13,15 +13,17 @@ env:
   PUPPETEER_SKIP_DOWNLOAD: "true"
 
 jobs:
-  # Unit tests + build across all three desktop OSes and supported Node versions.
-  unit:
-    name: unit (${{ matrix.os }}, node ${{ matrix.node }})
+  # The test suite runs on Node 20+ because Vitest 4 requires it
+  # (engines: ^20 || ^22 || >=24). The library itself still supports Node 18 —
+  # that's what the `node18-compat` job below is for.
+  test:
+    name: test (${{ matrix.os }}, node ${{ matrix.node }})
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
       matrix:
         os: [ubuntu-latest, windows-latest, macos-latest]
-        node: [18, 20, 22]
+        node: [20, 22, 24]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -33,7 +35,30 @@ jobs:
       - run: npm run typecheck
       - run: npm test
 
-  # Same unit suite under Bun.
+  # package.json promises `engines.node: >=18`, so keep proving the package
+  # builds and its types resolve there. Only the test runner needs a newer
+  # Node, not the shipped code — if this job breaks, the promise is broken and
+  # `engines` has to change (a major release).
+  node18-compat:
+    name: node 18 build + types (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+      # Vitest 4 is in devDependencies and doesn't support Node 18, which npm
+      # reports as EBADENGINE. That's expected here and not fatal.
+      - run: npm ci
+      - run: npm run build
+      - run: npm run typecheck
+
+  # Same suite under Bun.
   bun:
     name: bun (ubuntu)
     runs-on: ubuntu-latest

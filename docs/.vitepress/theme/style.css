@@ -18,9 +18,12 @@
   /* --- Ink and paper ---------------------------------------------------- */
   --hpx-paper: #ffffff;
   --hpx-paper-sunk: #fafafa;
+  /* Three ink levels, all WCAG AA on paper: 14.3:1 / 9.2:1 / 5.0:1. The muted
+     levels are darker than they look like they need to be — small 11px labels
+     are "normal text" to WCAG, so they need the full 4.5:1, not 3:1. */
   --hpx-ink: #2a2a2a;
-  --hpx-ink-2: rgba(0, 0, 0, 0.62);
-  --hpx-ink-3: rgba(0, 0, 0, 0.45);
+  --hpx-ink-2: rgba(0, 0, 0, 0.72);
+  --hpx-ink-3: rgba(0, 0, 0, 0.56);
   --hpx-rule: rgba(0, 0, 0, 0.09);
   --hpx-rule-strong: rgba(0, 0, 0, 0.16);
   --hpx-wash: rgba(0, 0, 0, 0.035);
@@ -31,7 +34,8 @@
   --hpx-full-bg: rgba(16, 112, 74, 0.08);
   --hpx-partial: #8a6100;
   --hpx-partial-bg: rgba(138, 97, 0, 0.09);
-  --hpx-none: rgba(0, 0, 0, 0.38);
+  /* "Unsupported" still has to be readable — grey, not ghosted. */
+  --hpx-none: rgba(0, 0, 0, 0.56);
   --hpx-none-bg: rgba(0, 0, 0, 0.05);
   /* Reserved for "this will bite you" — the only red on the site. */
   --hpx-alert: #b3261e;
@@ -48,8 +52,8 @@
   --hpx-paper: #0d0d0d;
   --hpx-paper-sunk: #151515;
   --hpx-ink: #ededed;
-  --hpx-ink-2: rgba(255, 255, 255, 0.64);
-  --hpx-ink-3: rgba(255, 255, 255, 0.45);
+  --hpx-ink-2: rgba(255, 255, 255, 0.76);
+  --hpx-ink-3: rgba(255, 255, 255, 0.56);
   --hpx-rule: rgba(255, 255, 255, 0.11);
   --hpx-rule-strong: rgba(255, 255, 255, 0.2);
   --hpx-wash: rgba(255, 255, 255, 0.04);
@@ -59,7 +63,7 @@
   --hpx-full-bg: rgba(78, 207, 154, 0.12);
   --hpx-partial: #e0b054;
   --hpx-partial-bg: rgba(224, 176, 84, 0.13);
-  --hpx-none: rgba(255, 255, 255, 0.36);
+  --hpx-none: rgba(255, 255, 255, 0.54);
   --hpx-none-bg: rgba(255, 255, 255, 0.06);
   --hpx-alert: #f28b82;
   --hpx-alert-bg: rgba(242, 139, 130, 0.12);

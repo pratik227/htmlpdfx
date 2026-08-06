@@ -90,7 +90,10 @@
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs",
     "docs:check-links": "node test/check-links.mjs",
-    "prepublishOnly": "npm run build"
+    "release:check": "node scripts/release-check.mjs",
+    "prepublishOnly": "npm run typecheck && npm test && npm run build",
+    "docs:agents": "node scripts/gen-llms.mjs",
+    "postdocs:build": "npm run docs:agents"
   },
   "optionalDependencies": {
     "puppeteer": "^25.1.0"
