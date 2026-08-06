@@ -131,14 +131,14 @@
     "@iconify-json/solar": "^1.2.5",
     "@iconify/utils": "^3.1.4",
     "@types/node": "^22.19.19",
-    "pdfjs-dist": "^6.0.227",
-    "playwright": "^1.60.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "pdfjs-dist": "^6.2.108",
+    "playwright": "^1.62.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
     "tsup": "^8.3.5",
     "typescript": "^5.7.2",
     "vitepress": "^1.5.0",
     "vitest": "^4.1.10",
-    "vue": "^3.5.0"
+    "vue": "^3.5.40"
   }
 }
