@@ -17,10 +17,10 @@ await toPdf(html, {
 
 | Token        | Replaced with        |
 | ------------ | -------------------- |
-| `{{page}}`   | current page number  |
-| `{{pages}}`  | total page count     |
-| `{{title}}`  | `metadata.title`     |
-| `{{date}}`   | generation date (chromium) |
+| `{{page}}`{v-pre}   | current page number  |
+| `{{pages}}`{v-pre}  | total page count     |
+| `{{title}}`{v-pre}  | `metadata.title`     |
+| `{{date}}`{v-pre}   | generation date (chromium) |
 
 ## Notes
 
