@@ -84,6 +84,9 @@ function toPlainMarkdown(body, matrix) {
     .replace(/^<\/?(?:CardGroup|Card|Steps|Step|Callout|EngineBadge|TierMark|Icon)\b[^>]*>\s*$/gm, "")
     // Inline badges read as noise mid-sentence.
     .replace(/<(?:EngineBadge|TierMark|Icon)\b[^>]*\/>/g, "")
+    // markdown-it-attrs escape hatch on code spans (`{{page}}`{v-pre}) — the
+    // braces need no protection in plain markdown.
+    .replace(/(`)\{v-pre\}/g, "$1")
     // VitePress container syntax.
     .replace(/^:::\s*(?:code-group|tip|info|warning|danger)?[^\n]*$/gm, "")
     .replace(/\n{3,}/g, "\n\n")

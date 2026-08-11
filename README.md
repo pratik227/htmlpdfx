@@ -2,7 +2,13 @@
 
 > Modern HTML → PDF for JavaScript & TypeScript. One unified API across **Node**, **Bun**, and the **browser**.
 
+[![npm version](https://img.shields.io/npm/v/htmlpdfx?label=npm&color=cb3837)](https://www.npmjs.com/package/htmlpdfx)
+[![total downloads](https://img.shields.io/npm/dt/htmlpdfx?label=total%20downloads&color=5e6ad2)](https://www.npmjs.com/package/htmlpdfx)
+[![license](https://img.shields.io/npm/l/htmlpdfx?color=3ba55d)](LICENSE)
+
 `htmlpdfx` is built around a simple idea: use a **real browser engine** when one is available (Node/Bun) for **selectable vector text, perfect CSS (flex/grid/web fonts), and native page breaks**; and in the browser, use a **fully self-contained renderer + PDF writer** (no third-party dependencies). One unified API, the best engine for each runtime.
+
+📖 **Why this exists:** [The entire JavaScript PDF ecosystem rests on one package that stopped shipping in 2022](https://medium.com/@pratikpatel_60309/the-entire-javascript-pdf-ecosystem-rests-on-one-package-that-stopped-shipping-in-2022-63c7cd4490ca) — the story behind htmlpdfx.
 
 ```ts
 import { toPdf } from "htmlpdfx";
@@ -27,6 +33,8 @@ await pdf.save("hello.pdf");          // Node / Bun
 | Dependencies | **Zero** runtime deps (Puppeteer/Playwright optional, server only) |
 
 ## Install
+
+Available on npm: **[npmjs.com/package/htmlpdfx](https://www.npmjs.com/package/htmlpdfx)**
 
 ```bash
 npm i htmlpdfx
